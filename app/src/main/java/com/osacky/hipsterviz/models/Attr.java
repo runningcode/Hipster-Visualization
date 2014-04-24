@@ -12,19 +12,19 @@ public class Attr {
         return user;
     }
 
-    public String getPage() {
-        return page;
+    public int getPage() {
+        return Integer.parseInt(page);
     }
 
-    public String getPerPage() {
-        return perPage;
+    public int getPerPage() {
+        return Integer.parseInt(perPage);
     }
 
-    public String getTotalPages() {
-        return totalPages;
+    public int getTotalPages() {
+        return Integer.parseInt(totalPages);
     }
 
-    public String getTotal() {
-        return total;
+    public int getTotal() {
+        return Integer.parseInt(total);
     }
 }
