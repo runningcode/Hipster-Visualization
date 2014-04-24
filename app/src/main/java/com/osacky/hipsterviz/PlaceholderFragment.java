@@ -1,23 +1,19 @@
 package com.osacky.hipsterviz;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.osacky.hipsterviz.api.ApiAdapter;
-import com.osacky.hipsterviz.api.LastFmApi;
-import com.osacky.hipsterviz.models.User;
+import com.octo.android.robospice.persistence.DurationInMillis;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
+import com.octo.android.robospice.request.listener.RequestProgress;
+import com.octo.android.robospice.request.listener.RequestProgressListener;
+import com.osacky.hipsterviz.models.Track;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-
-public class PlaceholderFragment extends Fragment {
+public class PlaceholderFragment extends BaseSpiceFragment {
 
     private static final String TAG = "PlaceHolderFragment";
 
@@ -34,17 +30,29 @@ public class PlaceholderFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        LastFmApi lastFmApi = ApiAdapter.getLastFmApi();
-        lastFmApi.getUserInfo("nosacky", new Callback<User>() {
-            @Override
-            public void success(User user, Response response) {
-                Log.i(TAG, "user name is " + user.getName());
-            }
+        loadingInterface.onLoadingStarted();
+        UserHistorySpiceRequest request = new UserHistorySpiceRequest("nosacky");
+        getSpiceManager().execute(request, "nosacky", DurationInMillis.ALWAYS_RETURNED, new UserHistoryRequestListener());
+    }
 
-            @Override
-            public void failure(RetrofitError retrofitError) {
+    private final class UserHistoryRequestListener implements RequestListener<Track.List>, RequestProgressListener {
 
-            }
-        });
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            Log.i(TAG, spiceException.getMessage());
+            loadingInterface.onLoadingFinished();
+        }
+
+        @Override
+        public void onRequestSuccess(Track.List tracks) {
+            Log.i(TAG, tracks.get(0).getName());
+            loadingInterface.onLoadingFinished();
+        }
+
+        @Override
+        public void onRequestProgressUpdate(RequestProgress progress) {
+            Log.i(TAG, "progress is " + progress.getProgress());
+            loadingInterface.onLoadingProgressUpdate((int) (progress.getProgress() * 10000));
+        }
     }
 }

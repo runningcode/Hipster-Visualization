@@ -1,5 +1,15 @@
 package com.osacky.hipsterviz.models;
 
+import org.joda.time.DateTime;
+
 public class Date {
-    Long uts;
+    String uts;
+
+    public DateTime getDate() {
+        return new DateTime(uts);
+    }
+
+    public Long getLongUTS() {
+        return Long.parseLong(uts);
+    }
 }

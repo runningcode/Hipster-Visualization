@@ -1,7 +1,7 @@
 package com.osacky.hipsterviz.api;
 
-import com.osacky.hipsterviz.models.TrackHistoryPage;
 import com.osacky.hipsterviz.models.Track;
+import com.osacky.hipsterviz.models.TrackHistoryPage;
 import com.osacky.hipsterviz.models.User;
 
 import retrofit.Callback;

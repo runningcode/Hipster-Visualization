@@ -1,6 +1,7 @@
 package com.osacky.hipsterviz.models;
 
 public class Artist {
+
     String name;
     String mbid;
     String url;

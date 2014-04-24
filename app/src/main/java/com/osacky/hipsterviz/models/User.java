@@ -4,10 +4,12 @@ public class User {
     String name;
     String realName;
     String country;
-    char gender;
+    String gender;
+    String age;
+    String playCount;
 
     public int getPlayCount() {
-        return playCount;
+        return Integer.parseInt(playCount);
     }
 
     public String getName() {
@@ -22,9 +24,11 @@ public class User {
         return country;
     }
 
-    public char getGender() {
+    public String getGender() {
         return gender;
     }
 
-    int playCount;
+    public int getAge() {
+        return Integer.parseInt(age);
+    }
 }

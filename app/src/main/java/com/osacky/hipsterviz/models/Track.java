@@ -1,10 +1,17 @@
 package com.osacky.hipsterviz.models;
 
+import java.util.ArrayList;
+
 public class Track {
+
+    public static class List extends ArrayList<Track> {
+    }
+
     Artist artist;
     String name;
     String mbid;
     String url;
+    Date date;
 
     public Date getDate() {
         return date;
@@ -26,6 +33,5 @@ public class Track {
         return url;
     }
 
-    Date date;
 
 }
