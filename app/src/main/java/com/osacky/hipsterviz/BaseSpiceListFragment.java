@@ -1,13 +1,15 @@
 package com.osacky.hipsterviz;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
+import android.view.View;
 
 import com.octo.android.robospice.SpiceManager;
 import com.osacky.hipsterviz.api.LastFmSpiceService;
 
-public abstract class BaseSpiceFragment extends Fragment {
+public abstract class BaseSpiceListFragment extends ListFragment {
 
     protected LoadingInterface loadingInterface;
 
@@ -17,6 +19,15 @@ public abstract class BaseSpiceFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getListView().setClipToPadding(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            getListView().setFitsSystemWindows(true);
+        }
     }
 
     @Override

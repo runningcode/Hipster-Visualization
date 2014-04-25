@@ -2,18 +2,15 @@ package com.osacky.hipsterviz;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
-import com.octo.android.robospice.request.listener.RequestProgress;
-import com.octo.android.robospice.request.listener.RequestProgressListener;
-import com.osacky.hipsterviz.models.Track;
+import com.osacky.hipsterviz.models.Attr;
+import com.osacky.hipsterviz.models.TrackHistoryPage;
 
-public class PlaceholderFragment extends BaseSpiceFragment {
+public class PlaceholderFragment extends BaseSpiceListFragment implements RequestListener<TrackHistoryPage> {
 
     private static final String TAG = "PlaceHolderFragment";
 
@@ -21,38 +18,51 @@ public class PlaceholderFragment extends BaseSpiceFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        return rootView;
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setListAdapter(new TrackListAdapter(getActivity()));
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setListShown(false);
+        setEmptyText("YEAH MAN");
     }
 
     @Override
     public void onStart() {
         super.onStart();
         loadingInterface.onLoadingStarted();
-        UserHistorySpiceRequest request = new UserHistorySpiceRequest("nosacky");
-        getSpiceManager().execute(request, "nosacky", DurationInMillis.ALWAYS_RETURNED, new UserHistoryRequestListener());
+        HistoryPageSpiceRequest spiceRequest = new HistoryPageSpiceRequest("nosacky", 1);
+        getSpiceManager().execute(spiceRequest, "nosacky" + 1, DurationInMillis.ALWAYS_RETURNED, this);
     }
 
-    private final class UserHistoryRequestListener implements RequestListener<Track.List>, RequestProgressListener {
+    @Override
+    public void onRequestFailure(SpiceException spiceException) {
+        Log.i(TAG, spiceException.getMessage());
+        loadingInterface.onLoadingFinished();
+        setListShown(false);
+    }
 
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            Log.i(TAG, spiceException.getMessage());
+    @Override
+    public void onRequestSuccess(TrackHistoryPage page) {
+        final Attr attr = page.getAttr();
+        final float progress = attr.getProgress();
+        Log.i(TAG, "progress is " + progress);
+
+        if (progress > 1.0f) {
             loadingInterface.onLoadingFinished();
+        } else {
+            loadingInterface.onLoadingProgressUpdate((int) (attr.getProgress() * 10000));
+            getListAdapter().addData(page.getTrack());
+            setListShown(true);
+            getSpiceManager().execute(HistoryPageSpiceRequest.getCachedSpiceRequest("nosacky", attr.getPage() + 1, DurationInMillis.ALWAYS_RETURNED), this);
         }
+    }
 
-        @Override
-        public void onRequestSuccess(Track.List tracks) {
-            Log.i(TAG, tracks.get(0).getName());
-            loadingInterface.onLoadingFinished();
-        }
-
-        @Override
-        public void onRequestProgressUpdate(RequestProgress progress) {
-            Log.i(TAG, "progress is " + progress.getProgress());
-            loadingInterface.onLoadingProgressUpdate((int) (progress.getProgress() * 10000));
-        }
+    @Override
+    public TrackListAdapter getListAdapter() {
+        return (TrackListAdapter) super.getListAdapter();
     }
 }

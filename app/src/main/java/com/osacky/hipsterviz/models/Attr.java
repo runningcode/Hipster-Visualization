@@ -27,4 +27,8 @@ public class Attr {
     public int getTotal() {
         return Integer.parseInt(total);
     }
+
+    public float getProgress() {
+        return getPage() * 1.0f / getTotalPages();
+    }
 }

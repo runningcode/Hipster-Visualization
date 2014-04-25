@@ -6,6 +6,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 
+import com.readystatesoftware.systembartint.SystemBarTintManager;
+
 
 public class MainActivity extends ActionBarActivity implements LoadingInterface {
 
@@ -13,6 +15,7 @@ public class MainActivity extends ActionBarActivity implements LoadingInterface 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_PROGRESS);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -20,6 +23,10 @@ public class MainActivity extends ActionBarActivity implements LoadingInterface 
                     .commit();
         }
         setProgressBarVisibility(false);
+        setProgressBarIndeterminateVisibility(false);
+        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+        tintManager.setStatusBarTintEnabled(true);
+        tintManager.setNavigationBarTintEnabled(true);
     }
 
     @Override

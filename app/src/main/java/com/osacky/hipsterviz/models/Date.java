@@ -6,7 +6,7 @@ public class Date {
     String uts;
 
     public DateTime getDate() {
-        return new DateTime(uts);
+        return new DateTime(Long.parseLong(uts) * 1000L);
     }
 
     public Long getLongUTS() {
