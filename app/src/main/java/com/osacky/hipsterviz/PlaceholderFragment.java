@@ -10,17 +10,24 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.osacky.hipsterviz.models.Attr;
 import com.osacky.hipsterviz.models.TrackHistoryPage;
 
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.EFragment;
+
+@EFragment
 public class PlaceholderFragment extends BaseSpiceListFragment implements RequestListener<TrackHistoryPage> {
 
     private static final String TAG = "PlaceHolderFragment";
 
+    @Bean
+    TrackListAdapter trackListAdapter;
+
     public PlaceholderFragment() {
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setListAdapter(new TrackListAdapter(getActivity()));
+    @AfterViews
+    void bindAdapter() {
+        setListAdapter(trackListAdapter);
     }
 
     @Override
@@ -55,14 +62,9 @@ public class PlaceholderFragment extends BaseSpiceListFragment implements Reques
             loadingInterface.onLoadingFinished();
         } else {
             loadingInterface.onLoadingProgressUpdate((int) (attr.getProgress() * 10000));
-            getListAdapter().addData(page.getTrack());
+            trackListAdapter.addData(page.getTrack());
             setListShown(true);
             getSpiceManager().execute(HistoryPageSpiceRequest.getCachedSpiceRequest("nosacky", attr.getPage() + 1, DurationInMillis.ALWAYS_RETURNED), this);
         }
-    }
-
-    @Override
-    public TrackListAdapter getListAdapter() {
-        return (TrackListAdapter) super.getListAdapter();
     }
 }

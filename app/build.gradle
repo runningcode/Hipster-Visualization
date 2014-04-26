@@ -1,4 +1,6 @@
 apply plugin: 'android'
+apply plugin: 'android-apt'
+def AAVersion = '3.0.1'
 
 android {
     compileSdkVersion 19
@@ -20,9 +22,22 @@ android {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
     }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'src/main/AndroidManifest.xml'
+            java.srcDirs = ['src/main/java', 'GENERATED_FOLDER']
+            resources.srcDirs = ['src/main/resources']
+            res.srcDirs = ['src/main/res']
+            assets.srcDirs = ['src/main/assets']
+        }
+    }
+
 }
 
 dependencies {
+    apt "org.androidannotations:androidannotations:$AAVersion"
+    compile "org.androidannotations:androidannotations-api:$AAVersion"
     compile 'com.android.support:appcompat-v7:19.1.0'
     compile 'com.android.support:support-v4:19.1.0'
     compile 'com.facebook.rebound:rebound:0.3.3'
@@ -32,4 +47,12 @@ dependencies {
     compile 'com.squareup.retrofit:retrofit:1.5.0'
     compile 'joda-time:joda-time:2.3'
     compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+apt {
+    arguments {
+        androidManifestFile variant.processResources.manifestFile
+
+        logLevel 'INFO'
+        logFile '/var/log/aa.log'
+    }
 }

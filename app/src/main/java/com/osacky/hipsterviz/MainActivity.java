@@ -8,7 +8,9 @@ import android.view.Window;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
+import org.androidannotations.annotations.EActivity;
 
+@EActivity(R.layout.activity_main)
 public class MainActivity extends ActionBarActivity implements LoadingInterface {
 
     @Override
@@ -16,10 +18,9 @@ public class MainActivity extends ActionBarActivity implements LoadingInterface 
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_PROGRESS);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new PlaceholderFragment_())
                     .commit();
         }
         setProgressBarVisibility(false);
