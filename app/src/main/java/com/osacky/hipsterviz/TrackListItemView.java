@@ -1,16 +1,27 @@
 package com.osacky.hipsterviz;
 
 import android.content.Context;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.osacky.hipsterviz.models.Track;
+import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
+import org.jetbrains.annotations.NotNull;
 
 @EViewGroup(R.layout.item_track)
 public class TrackListItemView extends LinearLayout {
+
+    private final Picasso mPicasso;
+
+    @NotNull
+    Context mContext;
+
+    @ViewById(R.id.track_image)
+    ImageView imageView;
 
     @ViewById(R.id.track_title)
     TextView trackTitle;
@@ -18,19 +29,19 @@ public class TrackListItemView extends LinearLayout {
     @ViewById(R.id.track_artist)
     TextView artistName;
 
-    @ViewById(R.id.track_album)
-    TextView albumName;
-
     @ViewById(R.id.track_list_time)
     TextView timeView;
 
-    public TrackListItemView(Context context) {
+    public TrackListItemView(@NotNull Context context) {
         super(context);
+        mContext = context;
+        mPicasso = Picasso.with(context);
     }
 
     public void bind(Track track) {
         trackTitle.setText(track.getName());
         artistName.setText(track.getArtist().name);
         timeView.setText(track.getDateTime().toString());
+        mPicasso.load(track.getImage(mContext)).into(imageView);
     }
 }

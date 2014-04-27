@@ -42,7 +42,7 @@ public class TrackListAdapter extends BaseAdapter {
     @AfterInject
     void initAdapter() {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        loadSavedData();
+//        loadSavedData();
     }
 
     @Override
@@ -69,7 +69,6 @@ public class TrackListAdapter extends BaseAdapter {
         } else {
             trackListItemView = (TrackListItemView) convertView;
         }
-
         trackListItemView.bind(getItem(position));
         return trackListItemView;
     }
@@ -93,7 +92,6 @@ public class TrackListAdapter extends BaseAdapter {
                 }
             }
             notifyDataSetChanged();
-
         }
     }
 
@@ -107,7 +105,6 @@ public class TrackListAdapter extends BaseAdapter {
         synchronized (mLock) {
             mTracks.addAll(collection);
         }
-        notifyDataSetChanged();
     }
 
     public void insert(Track track, int index) {
@@ -129,14 +126,14 @@ public class TrackListAdapter extends BaseAdapter {
     void loadSavedData() {
         String savedPrefs = mSharedPreferences.getString(mContext.getString(R.string.PREF_SAVED_HISTORY), "");
         if (!savedPrefs.equals("")) {
-            mTracks = new Gson().fromJson(savedPrefs, Track.List.class);
-            setMillis();
+            notifyChanged(new Gson().fromJson(savedPrefs, Track.List.class));
         }
-        notifyChanged();
     }
 
     @UiThread
-    void notifyChanged() {
+    void notifyChanged(Track.List tracks) {
+        addData(tracks);
         notifyDataSetChanged();
+        setMillis();
     }
 }

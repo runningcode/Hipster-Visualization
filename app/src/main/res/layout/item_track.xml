@@ -4,13 +4,19 @@
               android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin">
+              >
+
+    <ImageView
+        android:id="@+id/track_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:contentDescription="@string/track_image_desc"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
         <TextView
             android:id="@+id/track_title"
@@ -27,15 +33,11 @@
             />
 
         <TextView
-            android:id="@+id/track_album"
+            android:id="@+id/track_list_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@android:style/TextAppearance.Small"
             />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/track_list_time"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"/>
 </LinearLayout>

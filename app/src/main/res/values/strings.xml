@@ -6,5 +6,6 @@
     <string name="action_settings">Settings</string>
 
     <string name="PREF_SAVED_HISTORY">pref_saved_history</string>
+    <string name="track_image_desc">Track Image</string>
 
 </resources>

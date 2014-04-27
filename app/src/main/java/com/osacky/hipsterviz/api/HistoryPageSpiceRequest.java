@@ -1,8 +1,7 @@
-package com.osacky.hipsterviz;
+package com.osacky.hipsterviz.api;
 
 import com.octo.android.robospice.request.CachedSpiceRequest;
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
-import com.osacky.hipsterviz.api.LastFmApi;
 import com.osacky.hipsterviz.models.TrackHistoryPage;
 
 public class HistoryPageSpiceRequest extends RetrofitSpiceRequest<TrackHistoryPage, LastFmApi> {
