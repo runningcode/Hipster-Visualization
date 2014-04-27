@@ -8,24 +8,31 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.osacky.hipsterviz.models.Track;
 
+import org.androidannotations.annotations.AfterInject;
+import org.androidannotations.annotations.EBean;
+import org.androidannotations.annotations.RootContext;
+
 import java.util.Collection;
 
+@EBean
 public class TrackListAdapter extends BaseAdapter {
 
     @SuppressWarnings("unused")
     private static final String TAG = "TrackListAdapter";
 
-    private final Context mContext;
-    private final LayoutInflater mLayoutInflater;
-    private final SharedPreferences mSharedPreferences;
+    @RootContext
+    Context mContext;
+
+    private SharedPreferences mSharedPreferences;
+
     private final Object mLock = new Object();
 
     private Track.List mTracks = new Track.List();
@@ -33,9 +40,11 @@ public class TrackListAdapter extends BaseAdapter {
     private long firstMillis;
     private long lastMillis;
 
-    public TrackListAdapter(Context context) {
-        mContext = context;
-        mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public TrackListAdapter() {
+    }
+    
+    @AfterInject
+    void initAdapter() {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         new LoadDataTask(context).forceLoad();
     }
@@ -57,28 +66,16 @@ public class TrackListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
+        TrackListItemView trackListItemView;
 
         if (convertView == null) {
-            convertView = mLayoutInflater.inflate(R.layout.item_track, parent, false);
-            viewHolder = new ViewHolder();
-            assert convertView != null;
-            viewHolder.nameTextView = (TextView) convertView.findViewById(R.id.track_title);
-            viewHolder.artistTextView = (TextView) convertView.findViewById(R.id.track_artist);
-            viewHolder.albumTextView = (TextView) convertView.findViewById(R.id.track_album);
-            viewHolder.listTime = (TextView) convertView.findViewById(R.id.track_list_time);
-            convertView.setTag(viewHolder);
+            trackListItemView = TrackListItemView_.build(mContext);
         } else {
-            viewHolder = (ViewHolder) convertView.getTag();
+            trackListItemView = (TrackListItemView) convertView;
         }
 
-        final Track track = getItem(position);
-        if (track != null) {
-            viewHolder.nameTextView.setText(track.getName());
-            viewHolder.artistTextView.setText(track.getArtist().name);
-            viewHolder.albumTextView.setText(track.getDateTime().toString());
-        }
-        return convertView;
+        trackListItemView.bind(getItem(position));
+        return trackListItemView;
     }
 
     public void addData(Track.List data) {
@@ -130,13 +127,6 @@ public class TrackListAdapter extends BaseAdapter {
     private void setMillis() {
         firstMillis = mTracks.get(0).getDateTime().getMillis();
         lastMillis = mTracks.get(getCount()-1).getDateTime().getMillis();
-    }
-
-    static class ViewHolder {
-        TextView nameTextView;
-        TextView artistTextView;
-        TextView albumTextView;
-        TextView listTime;
     }
 
     class LoadDataTask extends AsyncTaskLoader<Void> {
