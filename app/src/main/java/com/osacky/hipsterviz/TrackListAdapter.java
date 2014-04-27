@@ -2,7 +2,11 @@ package com.osacky.hipsterviz;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.v4.content.AsyncTaskLoader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +28,7 @@ public class TrackListAdapter extends BaseAdapter {
     private final SharedPreferences mSharedPreferences;
     private final Object mLock = new Object();
 
-    private Track.List mTracks;
+    private Track.List mTracks = new Track.List();
 
     private long firstMillis;
     private long lastMillis;
@@ -33,13 +37,7 @@ public class TrackListAdapter extends BaseAdapter {
         mContext = context;
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String savedPrefs = mSharedPreferences.getString(context.getString(R.string.PREF_SAVED_HISTORY), "");
-        if (!savedPrefs.equals("")) {
-            mTracks = new Gson().fromJson(savedPrefs, Track.List.class);
-            setMillis();
-        } else {
-            mTracks = new Track.List();
-        }
+        new LoadDataTask(context).forceLoad();
     }
 
     @Override
@@ -101,17 +99,15 @@ public class TrackListAdapter extends BaseAdapter {
                     }
                 }
             }
-            SharedPreferences.Editor editor = mSharedPreferences.edit();
-            editor.putString(mContext.getString(R.string.PREF_SAVED_HISTORY), new Gson().toJson(mTracks));
-            editor.commit();
+            notifyDataSetChanged();
+
         }
     }
 
     public void add(Track track) {
         synchronized (mLock) {
-                mTracks.add(track);
+            mTracks.add(track);
         }
-        notifyDataSetChanged();
     }
 
     public void addAll(Collection<Track> collection) {
@@ -125,7 +121,10 @@ public class TrackListAdapter extends BaseAdapter {
         synchronized (mLock) {
             mTracks.add(index, track);
         }
-        notifyDataSetChanged();
+    }
+
+    public Track.List getTracks() {
+        return mTracks;
     }
 
     private void setMillis() {
@@ -138,5 +137,29 @@ public class TrackListAdapter extends BaseAdapter {
         TextView artistTextView;
         TextView albumTextView;
         TextView listTime;
+    }
+
+    class LoadDataTask extends AsyncTaskLoader<Void> {
+
+        public LoadDataTask(Context context) {
+            super(context);
+        }
+
+        @Override
+        public Void loadInBackground() {
+            String savedPrefs = mSharedPreferences.getString(mContext.getString(R.string.PREF_SAVED_HISTORY), "");
+            if (!savedPrefs.equals("")) {
+                mTracks = new Gson().fromJson(savedPrefs, Track.List.class);
+                setMillis();
+            }
+            new Handler(Looper.getMainLooper()) {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    notifyDataSetChanged();
+                }
+            };
+            return null;
+        }
     }
 }
