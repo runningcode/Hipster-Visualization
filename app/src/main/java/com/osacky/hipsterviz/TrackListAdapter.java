@@ -2,13 +2,7 @@ package com.osacky.hipsterviz;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.view.LayoutInflater;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -17,8 +11,10 @@ import com.google.gson.Gson;
 import com.osacky.hipsterviz.models.Track;
 
 import org.androidannotations.annotations.AfterInject;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
+import org.androidannotations.annotations.UiThread;
 
 import java.util.Collection;
 
@@ -45,8 +41,8 @@ public class TrackListAdapter extends BaseAdapter {
     
     @AfterInject
     void initAdapter() {
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        new LoadDataTask(context).forceLoad();
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        loadSavedData();
     }
 
     @Override
@@ -129,27 +125,18 @@ public class TrackListAdapter extends BaseAdapter {
         lastMillis = mTracks.get(getCount()-1).getDateTime().getMillis();
     }
 
-    class LoadDataTask extends AsyncTaskLoader<Void> {
-
-        public LoadDataTask(Context context) {
-            super(context);
+    @Background
+    void loadSavedData() {
+        String savedPrefs = mSharedPreferences.getString(mContext.getString(R.string.PREF_SAVED_HISTORY), "");
+        if (!savedPrefs.equals("")) {
+            mTracks = new Gson().fromJson(savedPrefs, Track.List.class);
+            setMillis();
         }
+        notifyChanged();
+    }
 
-        @Override
-        public Void loadInBackground() {
-            String savedPrefs = mSharedPreferences.getString(mContext.getString(R.string.PREF_SAVED_HISTORY), "");
-            if (!savedPrefs.equals("")) {
-                mTracks = new Gson().fromJson(savedPrefs, Track.List.class);
-                setMillis();
-            }
-            new Handler(Looper.getMainLooper()) {
-                @Override
-                public void handleMessage(Message msg) {
-                    super.handleMessage(msg);
-                    notifyDataSetChanged();
-                }
-            };
-            return null;
-        }
+    @UiThread
+    void notifyChanged() {
+        notifyDataSetChanged();
     }
 }

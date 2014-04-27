@@ -2,12 +2,22 @@
 
     <!-- Base application theme. -->
     <style name="AppThemeBase" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+
+        <!-- compatibility -->
+        <item name="windowActionBarOverlay">true</item>
+        <item name="actionBarStyle">@style/MyActionBar</item>
     </style>
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="AppThemeBase">
         <!-- Customize your theme here. -->
+    </style>
+
+    <style name="MyActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/orange</item>
+        <item name="background">@color/orange</item>
     </style>
 
 </resources>

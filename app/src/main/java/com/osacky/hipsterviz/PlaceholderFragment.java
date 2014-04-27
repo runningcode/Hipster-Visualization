@@ -1,12 +1,8 @@
 package com.osacky.hipsterviz;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
-import android.view.View;
 
 import com.google.gson.Gson;
 import com.octo.android.robospice.persistence.DurationInMillis;
@@ -16,6 +12,7 @@ import com.osacky.hipsterviz.models.Attr;
 import com.osacky.hipsterviz.models.TrackHistoryPage;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
 
@@ -34,11 +31,6 @@ public class PlaceholderFragment extends BaseSpiceListFragment implements Reques
     @AfterViews
     void bindAdapter() {
         setListAdapter(trackListAdapter);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         setListShown(false);
         setEmptyText("An error occurred while loading the data");
     }
@@ -70,7 +62,7 @@ public class PlaceholderFragment extends BaseSpiceListFragment implements Reques
 
         if (progress >= 1.0f) {
             loadingInterface.onLoadingFinished();
-            new SaveDataTask(getActivity().getApplicationContext()).forceLoad();
+            loadInBackground();
         } else {
             loadingInterface.onLoadingProgressUpdate((int) (attr.getProgress() * 10000));
             getListAdapter().addData(page.getTrack());
@@ -85,7 +77,7 @@ public class PlaceholderFragment extends BaseSpiceListFragment implements Reques
     public void onStop() {
         super.onStop();
         if (mDataChanged) {
-            new SaveDataTask(getActivity().getApplicationContext()).forceLoad();
+            loadInBackground();
         }
     }
 
@@ -94,22 +86,11 @@ public class PlaceholderFragment extends BaseSpiceListFragment implements Reques
         return (TrackListAdapter) super.getListAdapter();
     }
 
-    class SaveDataTask extends AsyncTaskLoader<Void> {
-
-        private final Context mContext;
-
-        public SaveDataTask(Context context) {
-            super(context);
-            mContext = context;
-        }
-
-        @Override
-        public Void loadInBackground() {
-            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(mContext).edit();
-            editor.putString(mContext.getString(R.string.PREF_SAVED_HISTORY), new Gson().toJson(getListAdapter().getTracks()));
-            editor.commit();
-            mDataChanged = false;
-            return null;
-        }
+    @Background
+    public void loadInBackground() {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+        editor.putString(getActivity().getString(R.string.PREF_SAVED_HISTORY), new Gson().toJson(getListAdapter().getTracks()));
+        editor.commit();
+        mDataChanged = false;
     }
 }

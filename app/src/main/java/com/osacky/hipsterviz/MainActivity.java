@@ -27,7 +27,7 @@ public class MainActivity extends ActionBarActivity implements LoadingInterface 
         setProgressBarIndeterminateVisibility(false);
         SystemBarTintManager tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
-        tintManager.setNavigationBarTintEnabled(true);
+        tintManager.setStatusBarTintResource(R.color.orange);
     }
 
     @Override
@@ -52,6 +52,7 @@ public class MainActivity extends ActionBarActivity implements LoadingInterface 
     @Override
     public void onLoadingStarted() {
         setProgressBarVisibility(true);
+        setProgressBarIndeterminateVisibility(true);
     }
 
     @Override
@@ -62,5 +63,6 @@ public class MainActivity extends ActionBarActivity implements LoadingInterface 
     @Override
     public void onLoadingFinished() {
         setProgressBarVisibility(false);
+        setProgressBarIndeterminateVisibility(false);
     }
 }
