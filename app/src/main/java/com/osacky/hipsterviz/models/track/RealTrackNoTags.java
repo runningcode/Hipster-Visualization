@@ -1,5 +1,5 @@
 package com.osacky.hipsterviz.models.track;
 
-public class TrackListTrackNoTags extends RealBaseTrack {
+public class RealTrackNoTags extends RealBaseTrack {
     String topTags;
 }

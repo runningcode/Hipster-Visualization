@@ -2,6 +2,7 @@ package com.osacky.hipsterviz.api;
 
 import com.osacky.hipsterviz.models.TrackHistoryPage;
 import com.osacky.hipsterviz.models.User;
+import com.osacky.hipsterviz.models.artist.Artist;
 import com.osacky.hipsterviz.models.track.RealBaseTrack;
 
 import retrofit.Callback;
@@ -52,4 +53,10 @@ public interface LastFmApi {
             @Query("mbid") String mbid,
             Callback<RealBaseTrack> callback
     );
+
+    @GET("/?method=artist.getInfo")
+    Artist getArtistInfoByMbid(@Query("mbid") String mbid);
+
+    @GET("/?method=artist.getInfo")
+    Artist getArtistInfoByName(@Query("artist") String artist);
 }

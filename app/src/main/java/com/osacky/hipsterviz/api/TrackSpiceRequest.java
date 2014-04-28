@@ -9,10 +9,12 @@ public class TrackSpiceRequest extends RetrofitSpiceRequest<RealBaseTrack, LastF
 
     @SuppressWarnings("unused")
     private static final String TAG = "TrackSpiceRequest";
+    private static long cachePolicy = DurationInMillis.ALWAYS_RETURNED;
 
     private String mMbid;
     private String mTrack;
     private String mArtist;
+
 
     public TrackSpiceRequest(String mbid) {
         super(RealBaseTrack.class, LastFmApi.class);
@@ -27,12 +29,12 @@ public class TrackSpiceRequest extends RetrofitSpiceRequest<RealBaseTrack, LastF
 
     public static CachedSpiceRequest<RealBaseTrack> getCachedSpiceRequest(String mbid) {
         TrackSpiceRequest trackSpiceRequest = new TrackSpiceRequest(mbid);
-        return new CachedSpiceRequest<RealBaseTrack>(trackSpiceRequest, mbid, DurationInMillis.ALWAYS_RETURNED);
+        return new CachedSpiceRequest<RealBaseTrack>(trackSpiceRequest, mbid, cachePolicy);
     }
 
     public static CachedSpiceRequest<RealBaseTrack> getCachedSpiceRequest(String track, String artist) {
         TrackSpiceRequest trackSpiceRequest = new TrackSpiceRequest(track, artist);
-        return new CachedSpiceRequest<RealBaseTrack>(trackSpiceRequest, track + artist, DurationInMillis.ALWAYS_RETURNED);
+        return new CachedSpiceRequest<RealBaseTrack>(trackSpiceRequest, track + artist, cachePolicy);
     }
 
     @Override

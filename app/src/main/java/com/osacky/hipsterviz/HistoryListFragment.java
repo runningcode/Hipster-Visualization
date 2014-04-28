@@ -81,9 +81,7 @@ public class HistoryListFragment extends BaseSpiceListFragment implements Reques
     @Override
     public void onStop() {
         super.onStop();
-        if (mDataChanged) {
-            saveDataInBackground();
-        }
+        saveDataInBackground();
     }
 
     @Override
@@ -93,11 +91,13 @@ public class HistoryListFragment extends BaseSpiceListFragment implements Reques
 
     @Background
     public void saveDataInBackground() {
-        Log.i(TAG, "saving data in background");
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
-        editor.putString(getActivity().getString(R.string.PREF_SAVED_HISTORY), new Gson().toJson(getListAdapter().getTracks()));
-        editor.commit();
-        mDataChanged = false;
+        if (mDataChanged) {
+            Log.i(TAG, "saving data in background");
+            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+            editor.putString(getActivity().getString(R.string.PREF_SAVED_HISTORY), new Gson().toJson(getListAdapter().getTracks()));
+            editor.commit();
+            mDataChanged = false;
+        }
     }
 
     @ItemClick

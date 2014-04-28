@@ -2,7 +2,7 @@ package com.osacky.hipsterviz.models.track;
 
 import java.util.List;
 
-public class TrackListTrackWithTags extends RealBaseTrack {
+public class RealTrackWithTags extends RealBaseTrack {
     TopTags toptags;
 
     class TopTags {
