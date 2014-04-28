@@ -49,15 +49,19 @@ public class RealBaseTrack extends BaseTrack {
         }
     }
 
+    public Wiki getWiki() {
+        return wiki;
+    }
+
     @Override
     public BaseAlbum getAlbum() {
         return album;
     }
 
-    class Wiki {
-        String published;
-        String summary;
-        String content;
+    public class Wiki {
+        public String published;
+        public String summary;
+        public String content;
     }
 
 }

@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.osacky.hipsterviz.models.track.RealBaseTrack;
 import com.osacky.hipsterviz.models.track.RealTrackNoTags;
+import com.osacky.hipsterviz.models.track.RealTrackWithOneTag;
 import com.osacky.hipsterviz.models.track.RealTrackWithTags;
 
 import java.lang.reflect.Type;
@@ -33,13 +34,16 @@ public class TrackDeserializer<T extends RealBaseTrack> implements JsonDeseriali
             final JsonObject jsonElement = jsonObject.getAsJsonObject(trackString);
             if (jsonElement.get(topTagsString).isJsonPrimitive()) {
                 return new Gson().fromJson(jsonElement, RealTrackNoTags.class);
+            } else if (jsonElement.get(topTagsString).getAsJsonObject().get("tag").isJsonObject()) {
+                return new Gson().fromJson(jsonElement, RealTrackWithOneTag.class);
             } else {
                 return new Gson().fromJson(jsonElement, RealTrackWithTags.class);
             }
         } else {
-            final JsonObject jsonElement = jsonObject.getAsJsonObject(trackString);
-            if (jsonElement.get(topTagsString).isJsonPrimitive()) {
+            if (jsonObject.get(topTagsString).isJsonPrimitive()) {
                 return new Gson().fromJson(json, RealTrackNoTags.class);
+            } else if (jsonObject.get(topTagsString).getAsJsonObject().get("tag").isJsonObject()) {
+                return new Gson().fromJson(json, RealTrackWithOneTag.class);
             } else {
                 return new Gson().fromJson(json, RealTrackWithTags.class);
             }

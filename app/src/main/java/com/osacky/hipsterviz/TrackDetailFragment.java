@@ -1,15 +1,15 @@
 package com.osacky.hipsterviz;
 
 import android.os.Bundle;
+import android.text.Html;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.osacky.hipsterviz.api.TrackSpiceRequest;
 import com.osacky.hipsterviz.models.track.RealBaseTrack;
-import com.osacky.hipsterviz.models.track.RealTrackNoTags;
+import com.osacky.hipsterviz.models.track.RealTrackWithOneTag;
 import com.osacky.hipsterviz.models.track.RealTrackWithTags;
 import com.squareup.picasso.Picasso;
 
@@ -29,6 +29,12 @@ public class TrackDetailFragment extends BaseSpiceFragment implements RequestLis
 
     @ViewById(R.id.track_artist)
     TextView trackArtist;
+
+    @ViewById
+    TextView tags;
+
+    @ViewById(R.id.track_wiki)
+    TextView wiki;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,15 +56,18 @@ public class TrackDetailFragment extends BaseSpiceFragment implements RequestLis
 
     @Override
     public void onRequestSuccess(RealBaseTrack realTrack) {
-        if (realTrack instanceof RealTrackNoTags) {
-            Toast.makeText(getActivity(), "NO TAGS", Toast.LENGTH_SHORT).show();
-        } else if (realTrack instanceof RealTrackWithTags) {
-            Toast.makeText(getActivity(), "WITH TAGS", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getActivity(), ":(", Toast.LENGTH_SHORT).show();
+        String topTags = "No tags";
+        if (realTrack instanceof RealTrackWithTags) {
+            topTags = ((RealTrackWithTags)realTrack).getToptags();
+        } else if (realTrack instanceof RealTrackWithOneTag) {
+            topTags = ((RealTrackWithOneTag)realTrack).getToptags();
         }
+        tags.setText(topTags);
         trackTitle.setText(realTrack.getName());
         trackArtist.setText(realTrack.getArtist().getName());
         mPicasso.load(realTrack.getImage(getActivity())).into(trackImage);
+        if (realTrack.getWiki() != null) {
+            wiki.setText(Html.fromHtml(realTrack.getWiki().content));
+        }
     }
 }
