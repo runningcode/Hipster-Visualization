@@ -16,9 +16,12 @@ public class LoginFragment extends BaseSpiceFragment {
     @Click(R.id.submit_user_button)
     void submitButtonClicked(){
         //TODO: validate user
-        if(username.getText() == null || username.length()==0)
+        if(username.getText() == null || username.length()==0) {
             Toast.makeText(getActivity(), getString(R.string.invalid_name), Toast.LENGTH_SHORT).show();
-        else
+        } else {
             MainActivity_.intent(getActivity()).username(username.getText().toString()).start();
+            getActivity().finish();
+        }
+
     }
 }

@@ -2,6 +2,7 @@
 <resources>
 
     <style name="AppTheme.Hipster.Launcher" parent="@android:style/Theme.Holo.NoActionBar.TranslucentDecor">
+        <item name="android:windowBackground">@drawable/app_background</item>
         <item name="android:editTextStyle">@style/EditTextAppTheme</item>
 
         <!-- compatibility -->
