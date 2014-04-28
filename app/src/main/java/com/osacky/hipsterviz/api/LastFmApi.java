@@ -1,8 +1,8 @@
 package com.osacky.hipsterviz.api;
 
-import com.osacky.hipsterviz.models.Track;
 import com.osacky.hipsterviz.models.TrackHistoryPage;
 import com.osacky.hipsterviz.models.User;
+import com.osacky.hipsterviz.models.track.RealBaseTrack;
 
 import retrofit.Callback;
 import retrofit.http.GET;
@@ -32,7 +32,7 @@ public interface LastFmApi {
     );
 
     @GET("/?method=track.getinfo")
-    Track getTrackInfo(
+    RealBaseTrack getTrackInfo(
             @Query("track") String track,
             @Query("artist") String artist
     );
@@ -41,15 +41,15 @@ public interface LastFmApi {
     void getTrackInfo(
             @Query("track") String track,
             @Query("artist") String artist,
-            Callback<Track> callback
+            Callback<RealBaseTrack> callback
     );
 
     @GET("/?method=track.getinfo")
-    Track getTrackInfo(@Query("mbid") String mbid);
+    RealBaseTrack getTrackInfo(@Query("mbid") String mbid);
 
     @GET("/?method=track.getinfo")
     void getTrackInfo(
             @Query("mbid") String mbid,
-            Callback<Track> callback
+            Callback<RealBaseTrack> callback
     );
 }

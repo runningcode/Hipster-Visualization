@@ -5,7 +5,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.osacky.hipsterviz.models.Track;
+import com.osacky.hipsterviz.models.track.TrackListTrack;
 import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.EViewGroup;
@@ -38,9 +38,9 @@ public class TrackListItemView extends LinearLayout {
         mPicasso = Picasso.with(context);
     }
 
-    public void bind(Track track) {
+    public void bind(TrackListTrack track) {
         trackTitle.setText(track.getName());
-        artistName.setText(track.getArtist().name);
+        artistName.setText(track.getArtist().getName());
         timeView.setText(track.getDateTime().toString());
         mPicasso.load(track.getImage(mContext)).into(imageView);
     }

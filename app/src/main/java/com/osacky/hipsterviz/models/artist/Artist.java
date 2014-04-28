@@ -1,17 +1,13 @@
-package com.osacky.hipsterviz.models;
+package com.osacky.hipsterviz.models.artist;
 
-public class Artist {
+public class Artist extends FakeArtist {
 
     String name;
-    String mbid;
     String url;
 
+    @Override
     public String getName() {
         return name;
-    }
-
-    public String getMbid() {
-        return mbid;
     }
 
     public String getUrl() {

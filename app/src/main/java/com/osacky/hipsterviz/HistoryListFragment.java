@@ -12,24 +12,26 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.osacky.hipsterviz.api.HistoryPageSpiceRequest;
 import com.osacky.hipsterviz.models.Attr;
 import com.osacky.hipsterviz.models.TrackHistoryPage;
+import com.osacky.hipsterviz.models.track.TrackListTrack;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.ItemClick;
 
 @EFragment
-public class PlaceholderFragment extends BaseSpiceListFragment implements RequestListener<TrackHistoryPage>, AbsListView.OnScrollListener {
+public class HistoryListFragment extends BaseSpiceListFragment implements RequestListener<TrackHistoryPage>, AbsListView.OnScrollListener {
 
     @SuppressWarnings("unused")
     private static final String TAG = "PlaceHolderFragment";
-    private static boolean mDataChanged = false;
-    private static boolean mScrollStateIdle = true;
+    private boolean mDataChanged = false;
+    private boolean mScrollStateIdle = true;
 
     @Bean
     TrackListAdapter trackListAdapter;
 
-    public PlaceholderFragment() {
+    public HistoryListFragment() {
     }
 
     @AfterViews
@@ -46,8 +48,7 @@ public class PlaceholderFragment extends BaseSpiceListFragment implements Reques
         super.onResume();
         if (getListAdapter().isEmpty()) {
             loadingInterface.onLoadingStarted();
-            HistoryPageSpiceRequest spiceRequest = new HistoryPageSpiceRequest("nosacky", 1);
-            getSpiceManager().execute(spiceRequest, "nosacky" + 1, DurationInMillis.ALWAYS_EXPIRED, this);
+            getSpiceManager().execute(HistoryPageSpiceRequest.getCachedSpiceRequest("nosacky", 1, DurationInMillis.ALWAYS_RETURNED) , this);
         } else {
             setListShown(true);
         }
@@ -99,14 +100,27 @@ public class PlaceholderFragment extends BaseSpiceListFragment implements Reques
         mDataChanged = false;
     }
 
+    @ItemClick
+    void listItemClicked(TrackListTrack trackListTrack) {
+        if (trackListTrack.getMbid() == null) {
+            TrackDetailActivity_.intent(getActivity())
+                    .mbid(trackListTrack.getMbid())
+                    .start();
+        } else {
+            TrackDetailActivity_.intent(getActivity())
+                    .track(trackListTrack.getName())
+                    .artist(trackListTrack.getArtist().getName())
+                    .start();
+        }
+    }
+
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
-
     }
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        if ((firstVisibleItem + visibleItemCount) >= totalItemCount && mScrollStateIdle) {
+        if ((firstVisibleItem + visibleItemCount) >= (totalItemCount - 50) && mScrollStateIdle) {
             mScrollStateIdle = false;
             loadingInterface.onLoadingStarted();
             getSpiceManager().execute(HistoryPageSpiceRequest.getCachedSpiceRequest("nosacky", Math.round(totalItemCount/200f) + 1, DurationInMillis.ALWAYS_RETURNED), this);

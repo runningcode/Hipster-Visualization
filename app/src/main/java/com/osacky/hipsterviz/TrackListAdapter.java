@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.google.gson.Gson;
-import com.osacky.hipsterviz.models.Track;
+import com.osacky.hipsterviz.models.track.TrackListTrack;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.Background;
@@ -31,7 +31,7 @@ public class TrackListAdapter extends BaseAdapter {
 
     private final Object mLock = new Object();
 
-    private Track.List mTracks = new Track.List();
+    private TrackListTrack.BaseTrackList mTracks = new TrackListTrack.BaseTrackList();
 
     private long firstMillis;
     private long lastMillis;
@@ -51,7 +51,7 @@ public class TrackListAdapter extends BaseAdapter {
     }
 
     @Override
-    public Track getItem(int position) {
+    public TrackListTrack getItem(int position) {
         return mTracks.get(position);
     }
 
@@ -73,14 +73,14 @@ public class TrackListAdapter extends BaseAdapter {
         return trackListItemView;
     }
 
-    public void addData(Track.List data) {
+    public void addData(TrackListTrack.BaseTrackList data) {
         if (data != null) {
             if (isEmpty()) {
                 addAll(data);
                 setMillis();
             } else {
                 long millis;
-                for (Track track : data) {
+                for (TrackListTrack track : data) {
                     millis = track.getDateTime().getMillis();
                     if (millis > firstMillis) {
                         firstMillis = millis;
@@ -95,25 +95,25 @@ public class TrackListAdapter extends BaseAdapter {
         }
     }
 
-    public void add(Track track) {
+    public void add(TrackListTrack track) {
         synchronized (mLock) {
             mTracks.add(track);
         }
     }
 
-    public void addAll(Collection<Track> collection) {
+    public void addAll(Collection<TrackListTrack> collection) {
         synchronized (mLock) {
             mTracks.addAll(collection);
         }
     }
 
-    public void insert(Track track, int index) {
+    public void insert(TrackListTrack track, int index) {
         synchronized (mLock) {
             mTracks.add(index, track);
         }
     }
 
-    public Track.List getTracks() {
+    public TrackListTrack.BaseTrackList getTracks() {
         return mTracks;
     }
 
@@ -126,12 +126,12 @@ public class TrackListAdapter extends BaseAdapter {
     void loadSavedData() {
         String savedPrefs = mSharedPreferences.getString(mContext.getString(R.string.PREF_SAVED_HISTORY), "");
         if (!savedPrefs.equals("")) {
-            notifyChanged(new Gson().fromJson(savedPrefs, Track.List.class));
+            notifyChanged(new Gson().fromJson(savedPrefs, TrackListTrack.BaseTrackList.class));
         }
     }
 
     @UiThread
-    void notifyChanged(Track.List tracks) {
+    void notifyChanged(TrackListTrack.BaseTrackList tracks) {
         addData(tracks);
         notifyDataSetChanged();
         setMillis();

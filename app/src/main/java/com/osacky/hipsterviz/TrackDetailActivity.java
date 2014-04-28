@@ -6,42 +6,57 @@ import android.view.Window;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.FragmentById;
 import org.androidannotations.annotations.WindowFeature;
 
-@EActivity(R.layout.activity_blank)
-@WindowFeature({Window.FEATURE_PROGRESS, Window.FEATURE_INDETERMINATE_PROGRESS})
-public class MainActivity extends ActionBarActivity implements LoadingInterface {
+@EActivity(R.layout.activity_track_details)
+@WindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS)
+public class TrackDetailActivity extends ActionBarActivity implements LoadingInterface {
+
+    @Extra
+    String mbid;
+
+    @Extra
+    String artist;
+
+    @Extra
+    String track;
+
+    @FragmentById(R.id.track_detail_frag)
+    TrackDetailFragment trackDetailFragment_;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new HistoryListFragment_())
-                    .commit();
-        }
-        setProgressBarVisibility(false);
         setProgressBarIndeterminateVisibility(false);
         SystemBarTintManager tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
-        tintManager.setStatusBarTintResource(R.color.orange);
+        tintManager.setStatusBarTintResource(R.color.blue);
+    }
+
+    @AfterViews
+    void setArguments() {
+        if (mbid != null) {
+            trackDetailFragment_.loadData(mbid);
+        } else {
+            trackDetailFragment_.loadData(track, artist);
+        }
     }
 
     @Override
     public void onLoadingStarted() {
-//        setProgressBarVisibility(true);
         setProgressBarIndeterminateVisibility(true);
     }
 
     @Override
     public void onLoadingProgressUpdate(int progress) {
-        setProgress(progress);
     }
 
     @Override
     public void onLoadingFinished() {
-//        setProgressBarVisibility(false);
         setProgressBarIndeterminateVisibility(false);
     }
 }

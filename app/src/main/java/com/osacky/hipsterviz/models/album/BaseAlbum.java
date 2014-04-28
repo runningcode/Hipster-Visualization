@@ -1,8 +1,8 @@
-package com.osacky.hipsterviz.models;
+package com.osacky.hipsterviz.models.album;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Album {
+public class BaseAlbum {
     @SerializedName("#text")
     String name;
     String mbid;

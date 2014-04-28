@@ -2,9 +2,10 @@ package com.osacky.hipsterviz.api;
 
 import com.google.gson.GsonBuilder;
 import com.octo.android.robospice.retrofit.RetrofitGsonSpiceService;
-import com.osacky.hipsterviz.models.Track;
 import com.osacky.hipsterviz.models.TrackHistoryPage;
 import com.osacky.hipsterviz.models.User;
+import com.osacky.hipsterviz.models.track.RealBaseTrack;
+import com.osacky.hipsterviz.models.track.TrackListTrack;
 
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -25,7 +26,8 @@ public class LastFmSpiceService extends RetrofitGsonSpiceService {
     protected Converter createConverter() {
         return new GsonConverter(new GsonBuilder()
                 .registerTypeAdapter(User.class, new LastFmDeserializer<User>("user"))
-                .registerTypeAdapter(Track.class, new LastFmDeserializer<Track>("track"))
+                .registerTypeAdapter(TrackListTrack.class, new LastFmDeserializer<TrackListTrack>("track"))
+                .registerTypeAdapter(RealBaseTrack.class, new LastFmDeserializer<RealBaseTrack>("track"))
                 .registerTypeAdapter(TrackHistoryPage.class, new LastFmDeserializer<TrackHistoryPage>("recenttracks"))
                 .create());
     }
@@ -45,6 +47,6 @@ public class LastFmSpiceService extends RetrofitGsonSpiceService {
                 .setEndpoint(getServerUrl())
                 .setRequestInterceptor(requestInterceptor)
                 .setConverter(getConverter())
-                .setLogLevel(RestAdapter.LogLevel.BASIC);
+                .setLogLevel(RestAdapter.LogLevel.FULL);
     }
 }

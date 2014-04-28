@@ -3,11 +3,9 @@
     <!-- Base application theme. -->
     <style name="AppThemeBase" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:actionBarStyle">@style/MyActionBar</item>
 
         <!-- compatibility -->
         <item name="windowActionBarOverlay">true</item>
-        <item name="actionBarStyle">@style/MyActionBar</item>
     </style>
 
     <!-- Base application theme. -->
@@ -15,9 +13,26 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="MyActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+    <style name="AppTheme.Orange" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/OrangeActionBar</item>
+        <!-- compatibility -->
+        <item name="actionBarStyle">@style/OrangeActionBar</item>
+    </style>
+
+    <style name="AppTheme.Blue" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/BlueActionBar</item>
+        <!-- compatibility -->
+        <item name="actionBarStyle">@style/BlueActionBar</item>
+    </style>
+
+    <style name="OrangeActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@color/orange</item>
         <item name="background">@color/orange</item>
+    </style>
+
+    <style name="BlueActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/blue</item>
+        <item name="background">@color/blue</item>
     </style>
 
 </resources>
