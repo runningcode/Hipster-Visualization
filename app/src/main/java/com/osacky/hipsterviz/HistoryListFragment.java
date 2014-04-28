@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
-import com.osacky.hipsterviz.api.HistoryPageSpiceRequest;
+import com.osacky.hipsterviz.api.lastFmApi.HistoryPageSpiceRequest;
 import com.osacky.hipsterviz.models.Attr;
 import com.osacky.hipsterviz.models.TrackHistoryPage;
 import com.osacky.hipsterviz.models.track.TrackListTrack;
@@ -25,6 +25,8 @@ public class HistoryListFragment extends BaseSpiceListFragment implements Reques
 
     @SuppressWarnings("unused")
     private static final String TAG = "PlaceHolderFragment";
+    public static final int PLACES_BEFORE_BOTTOM = 50;
+    public static final float PAGE_SIZE = 200f;
     private boolean mDataChanged = false;
     private boolean mScrollStateIdle = true;
 
@@ -120,10 +122,10 @@ public class HistoryListFragment extends BaseSpiceListFragment implements Reques
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        if ((firstVisibleItem + visibleItemCount) >= (totalItemCount - 50) && mScrollStateIdle) {
+        if ((firstVisibleItem + visibleItemCount) >= (totalItemCount - PLACES_BEFORE_BOTTOM) && mScrollStateIdle) {
             mScrollStateIdle = false;
             loadingInterface.onLoadingStarted();
-            getSpiceManager().execute(HistoryPageSpiceRequest.getCachedSpiceRequest("nosacky", Math.round(totalItemCount/200f) + 1, DurationInMillis.ALWAYS_RETURNED), this);
+            getSpiceManager().execute(HistoryPageSpiceRequest.getCachedSpiceRequest("nosacky", Math.round(totalItemCount/ PAGE_SIZE) + 1, DurationInMillis.ALWAYS_RETURNED), this);
         }
     }
 }

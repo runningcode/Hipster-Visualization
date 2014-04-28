@@ -1,20 +1,21 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.osacky.hipsterviz.TrackDetailActivity_"
-    tools:ignore="MergeRootFrame"
-    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-    android:layout_marginRight="@dimen/activity_horizontal_margin"
-    android:layout_marginTop="@dimen/activity_vertical_margin"
-    android:layout_marginBottom="@dimen/activity_vertical_margin"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:id="@+id/container"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="com.osacky.hipsterviz.TrackDetailActivity_"
+             tools:ignore="MergeRootFrame"
+             android:layout_marginLeft="@dimen/activity_horizontal_margin"
+             android:layout_marginRight="@dimen/activity_horizontal_margin"
+             android:layout_marginTop="@dimen/activity_vertical_margin"
+             android:layout_marginBottom="@dimen/activity_vertical_margin"
     >
 
-    <fragment android:name="com.osacky.hipsterviz.TrackDetailFragment_"
-              android:layout_height="match_parent"
-              android:layout_width="match_parent"
-              android:id="@+id/track_detail_frag"
+    <fragment
+        android:name="com.osacky.hipsterviz.TrackDetailFragment_"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:id="@+id/track_detail_frag"
         />
 
 </FrameLayout>

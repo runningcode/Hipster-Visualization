@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.octo.android.robospice.SpiceManager;
-import com.osacky.hipsterviz.api.LastFmSpiceService;
+import com.osacky.hipsterviz.api.lastFmApi.LastFmSpiceService;
 
 public abstract class BaseSpiceFragment extends Fragment {
 

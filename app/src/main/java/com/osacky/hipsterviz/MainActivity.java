@@ -22,14 +22,14 @@ public class MainActivity extends ActionBarActivity implements LoadingInterface 
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new HistoryListFragment_())
+                    .add(R.id.container, new HipSpiceFragment_())
                     .commit();
         }
         setProgressBarVisibility(false);
         setProgressBarIndeterminateVisibility(false);
         SystemBarTintManager tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
-        tintManager.setStatusBarTintResource(R.color.orange);
+        tintManager.setStatusBarTintResource(R.color.blue);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class MainActivity extends ActionBarActivity implements LoadingInterface 
 
     @Override
     public void onLoadingProgressUpdate(int progress) {
-        setProgress(progress);
+//        setProgress(progress);
     }
 
     @Override

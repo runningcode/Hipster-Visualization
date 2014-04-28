@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
-import com.osacky.hipsterviz.api.TrackSpiceRequest;
+import com.osacky.hipsterviz.api.lastFmApi.TrackSpiceRequest;
 import com.osacky.hipsterviz.models.track.RealBaseTrack;
 import com.osacky.hipsterviz.models.track.RealTrackWithOneTag;
 import com.osacky.hipsterviz.models.track.RealTrackWithTags;

@@ -7,8 +7,8 @@ import android.util.DisplayMetrics;
 import com.osacky.hipsterviz.models.ImageObject;
 import com.osacky.hipsterviz.models.album.BaseAlbum;
 import com.osacky.hipsterviz.models.album.TrackAlbum;
-import com.osacky.hipsterviz.models.artist.Artist;
 import com.osacky.hipsterviz.models.artist.FakeArtist;
+import com.osacky.hipsterviz.models.artist.TrackArtist;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +23,7 @@ public class RealBaseTrack extends BaseTrack {
     String playCount;
     Wiki wiki;
     TrackAlbum album;
-    Artist artist;
+    TrackArtist artist;
 
     @Override
     public FakeArtist getArtist() {

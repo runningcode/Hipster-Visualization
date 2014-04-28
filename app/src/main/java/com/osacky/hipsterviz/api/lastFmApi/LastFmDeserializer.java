@@ -1,4 +1,4 @@
-package com.osacky.hipsterviz.api;
+package com.osacky.hipsterviz.api.lastFmApi;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
@@ -9,7 +9,7 @@ import com.google.gson.JsonParseException;
 
 import java.lang.reflect.Type;
 
-public class LastFmDeserializer<T> implements JsonDeserializer<T> {
+class LastFmDeserializer<T> implements JsonDeserializer<T> {
     @SuppressWarnings("unused")
     private static final String TAG = "LastFmDeserializer";
 

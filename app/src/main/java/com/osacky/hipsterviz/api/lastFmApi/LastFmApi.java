@@ -1,8 +1,8 @@
-package com.osacky.hipsterviz.api;
+package com.osacky.hipsterviz.api.lastFmApi;
 
 import com.osacky.hipsterviz.models.TrackHistoryPage;
 import com.osacky.hipsterviz.models.User;
-import com.osacky.hipsterviz.models.artist.Artist;
+import com.osacky.hipsterviz.models.artist.RealArtist;
 import com.osacky.hipsterviz.models.track.RealBaseTrack;
 
 import retrofit.Callback;
@@ -10,7 +10,7 @@ import retrofit.http.GET;
 import retrofit.http.Query;
 
 @SuppressWarnings("unused")
-public interface LastFmApi {
+interface LastFmApi {
     @GET("/?method=user.getinfo")
     User getUserInfo(@Query("user") String user);
 
@@ -55,8 +55,8 @@ public interface LastFmApi {
     );
 
     @GET("/?method=artist.getInfo")
-    Artist getArtistInfoByMbid(@Query("mbid") String mbid);
+    RealArtist getArtistInfoByMbid(@Query("mbid") String mbid);
 
     @GET("/?method=artist.getInfo")
-    Artist getArtistInfoByName(@Query("artist") String artist);
+    RealArtist getArtistInfoByName(@Query("artist") String artist);
 }

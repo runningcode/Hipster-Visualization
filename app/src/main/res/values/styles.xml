@@ -1,9 +1,13 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppThemeBase" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppThemeBase" parent="Theme.AppCompat">
+        <item name="android:windowBackground">@drawable/app_background</item>
+        <!--<item name="android:listViewStyle">@style/TransparentListView</item>-->
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:editTextStyle">@style/EditTextAppTheme</item>
+        <item name="android:fastScrollThumbDrawable">@drawable/fastscroll_thumb_white</item>
+        <item name="android:textColor">@android:color/white</item>
 
         <!-- compatibility -->
         <item name="android:editTextBackground">@drawable/apptheme_edit_text_holo_light</item>
@@ -27,13 +31,15 @@
         <item name="actionBarStyle">@style/BlueActionBar</item>
     </style>
 
-    <style name="OrangeActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@color/orange</item>
-        <item name="background">@color/orange</item>
+    <style name="OrangeActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
+        <item name="android:background">@color/trans_white</item>
+        <item name="logo">@drawable/ic_actionbar_logo</item>
+        <item name="background">@color/trans_white</item>
     </style>
 
-    <style name="BlueActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+    <style name="BlueActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
         <item name="android:background">@color/blue</item>
+        <item name="logo">@drawable/ic_actionbar_logo</item>
         <item name="background">@color/blue</item>
     </style>
 

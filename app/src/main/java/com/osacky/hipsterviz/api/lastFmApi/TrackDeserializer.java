@@ -1,4 +1,4 @@
-package com.osacky.hipsterviz.api;
+package com.osacky.hipsterviz.api.lastFmApi;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
@@ -14,7 +14,7 @@ import com.osacky.hipsterviz.models.track.RealTrackWithTags;
 import java.lang.reflect.Type;
 
 @SuppressWarnings("unused")
-public class TrackDeserializer<T extends RealBaseTrack> implements JsonDeserializer<RealBaseTrack> {
+class TrackDeserializer<T extends RealBaseTrack> implements JsonDeserializer<RealBaseTrack> {
     private static final String TAG = "TrackDeserializer";
 
     public TrackDeserializer() {

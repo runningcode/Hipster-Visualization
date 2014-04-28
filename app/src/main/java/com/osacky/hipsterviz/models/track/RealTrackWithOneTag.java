@@ -1,17 +1,14 @@
 package com.osacky.hipsterviz.models.track;
 
+import com.osacky.hipsterviz.models.Tag;
+
 public class RealTrackWithOneTag extends RealBaseTrack {
     Tag toptags;
     String tagStrings;
 
-    private class Tag {
-        String name;
-        String url;
-    }
-
     public String getToptags() {
         if (tagStrings == null) {
-            tagStrings = toptags.name;
+            tagStrings = toptags.getName();
         }
         return tagStrings;
     }

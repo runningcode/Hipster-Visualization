@@ -1,4 +1,4 @@
-package com.osacky.hipsterviz.api;
+package com.osacky.hipsterviz.api.thomasApi;
 
 import com.octo.android.robospice.retrofit.RetrofitGsonSpiceService;
 
@@ -7,7 +7,7 @@ import retrofit.RestAdapter;
 
 public class ThomasApiService extends RetrofitGsonSpiceService {
 
-    private static final String API_URL = "http://172.16.228.201:3000";
+    private static final String API_URL = "http://thomasdeegan.com:3030";
 
     @Override
     protected String getServerUrl() {

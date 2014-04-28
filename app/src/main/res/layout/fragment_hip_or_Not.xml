@@ -1,0 +1,65 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:paddingLeft="@dimen/activity_horizontal_margin"
+              android:paddingRight="@dimen/activity_horizontal_margin"
+              android:paddingTop="@dimen/activity_vertical_margin"
+              android:paddingBottom="@dimen/activity_vertical_margin"
+              android:clipToPadding="false"
+              android:fitsSystemWindows="true"
+              tools:context="com.osacky.hipsterviz.HipSpiceFragment_">
+
+    <TextView
+        android:id="@+id/hipster_artist_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:gravity="center"
+        style="@android:style/TextAppearance.Large"
+        />
+
+    <ImageView
+        android:id="@+id/hipster_artist_image"
+        android:layout_weight="3"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="@string/artist_image_desc"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:baselineAligned="false"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        >
+
+        <include
+            layout="@layout/hip_button"
+            android:id="@+id/hipster_button_no"
+            android:layout_alignParentLeft="true"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            />
+
+        <include
+            layout="@layout/hip_button"
+            android:id="@+id/hipster_button_yes"
+            android:layout_alignParentRight="true"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            />
+
+    </RelativeLayout>
+
+    <include
+        layout="@layout/hip_button"
+        android:id="@+id/hipster_button_dont_know"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        />
+
+</LinearLayout>

@@ -1,4 +1,4 @@
-package com.osacky.hipsterviz.api;
+package com.osacky.hipsterviz.api.lastFmApi;
 
 import com.octo.android.robospice.request.CachedSpiceRequest;
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;

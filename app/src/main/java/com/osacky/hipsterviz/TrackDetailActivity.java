@@ -26,7 +26,7 @@ public class TrackDetailActivity extends ActionBarActivity implements LoadingInt
     String track;
 
     @FragmentById(R.id.track_detail_frag)
-    TrackDetailFragment trackDetailFragment_;
+    TrackDetailFragment trackDetailFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,15 +34,15 @@ public class TrackDetailActivity extends ActionBarActivity implements LoadingInt
         setProgressBarIndeterminateVisibility(false);
         SystemBarTintManager tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
-        tintManager.setStatusBarTintResource(R.color.blue);
+        tintManager.setStatusBarTintResource(R.color.trans_white);
     }
 
     @AfterViews
     void setArguments() {
         if (mbid != null) {
-            trackDetailFragment_.loadData(mbid);
+            trackDetailFragment.loadData(mbid);
         } else {
-            trackDetailFragment_.loadData(track, artist);
+            trackDetailFragment.loadData(track, artist);
         }
     }
 

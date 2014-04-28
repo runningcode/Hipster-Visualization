@@ -1,6 +1,6 @@
 package com.osacky.hipsterviz.models.artist;
 
-public class Artist extends FakeArtist {
+public class TrackArtist extends FakeArtist {
 
     String name;
     String url;
