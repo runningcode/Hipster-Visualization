@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@drawable/tile"
+    android:orientation="vertical">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:id="@+id/imageView"
+        android:src="@drawable/ic_ster"/>
+
+    <ImageView
+        android:paddingTop="22dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView2"
+        android:src="@drawable/ic_vinyl"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:paddingTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view_horizontal_line"
+        android:id="@+id/linear_card_number"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageCardType"
+            android:padding="5dp"
+            android:src="@drawable/ic_lastfm"
+            android:layout_gravity="center"/>
+
+        <EditText
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:inputType="text"
+            android:textColor="@android:color/white"
+            android:id="@+id/username_text"
+            android:hint="@string/user_name"
+            android:maxLength="16"
+            android:textColorHint="@color/white"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"/>
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_navigation_next_item"
+            android:id="@+id/submit_user_button"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -7,11 +7,15 @@ import android.view.Window;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.WindowFeature;
 
 @EActivity(R.layout.activity_blank)
 @WindowFeature({Window.FEATURE_PROGRESS, Window.FEATURE_INDETERMINATE_PROGRESS})
 public class MainActivity extends ActionBarActivity implements LoadingInterface {
+
+    @Extra
+    String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -7,5 +7,7 @@
     <string name="PREF_SAVED_HISTORY">pref_saved_history</string>
     <string name="track_image_desc">Track Image</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="user_name">lastfm username</string>
+    <string name="invalid_name">input a valid username</string>
 
 </resources>
