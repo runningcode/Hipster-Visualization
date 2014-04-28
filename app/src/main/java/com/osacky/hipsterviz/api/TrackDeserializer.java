@@ -12,36 +12,36 @@ import com.osacky.hipsterviz.models.track.RealTrackWithTags;
 
 import java.lang.reflect.Type;
 
-public class TrackDeserializer<T extends RealBaseTrack> implements JsonDeserializer<T> {
-    @SuppressWarnings("unused")
+@SuppressWarnings("unused")
+public class TrackDeserializer<T extends RealBaseTrack> implements JsonDeserializer<RealBaseTrack> {
     private static final String TAG = "TrackDeserializer";
-
-    private final String field = "track";
 
     public TrackDeserializer() {
     }
 
     @Override
-    public T deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public RealBaseTrack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
+        String trackString = "track";
+        String topTagsString = "toptags";
         if (jsonObject.toString().equals("{}")) {
             throw new JsonParseException("Object was {}");
         } else if (jsonObject.has("error")) {
             String message = jsonObject.get("message").getAsString();
             throw new JsonParseException(message);
-        } else if (jsonObject.has(field)) {
-            final JsonObject jsonElement = jsonObject.getAsJsonObject(field);
-            if (jsonElement.get("toptags").isJsonPrimitive()) {
-                return (T) new Gson().fromJson(jsonElement, RealTrackNoTags.class);
+        } else if (jsonObject.has(trackString)) {
+            final JsonObject jsonElement = jsonObject.getAsJsonObject(trackString);
+            if (jsonElement.get(topTagsString).isJsonPrimitive()) {
+                return new Gson().fromJson(jsonElement, RealTrackNoTags.class);
             } else {
-                return (T) new Gson().fromJson(jsonElement, RealTrackWithTags.class);
+                return new Gson().fromJson(jsonElement, RealTrackWithTags.class);
             }
         } else {
-            final JsonObject jsonElement = jsonObject.getAsJsonObject(field);
-            if (jsonElement.get("toptags").isJsonPrimitive()) {
-                return (T) new Gson().fromJson(json, RealTrackNoTags.class);
+            final JsonObject jsonElement = jsonObject.getAsJsonObject(trackString);
+            if (jsonElement.get(topTagsString).isJsonPrimitive()) {
+                return new Gson().fromJson(json, RealTrackNoTags.class);
             } else {
-                return (T) new Gson().fromJson(json, RealTrackWithTags.class);
+                return new Gson().fromJson(json, RealTrackWithTags.class);
             }
         }
     }
