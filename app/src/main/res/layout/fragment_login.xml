@@ -1,53 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:clipToPadding="false"
+    android:fitsSystemWindows="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
         android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:src="@drawable/ic_ster"/>
 
     <ImageView
-        android:paddingTop="22dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.5"
+        android:layout_margin="20dp"
         android:src="@drawable/ic_vinyl"/>
+
     <LinearLayout
         android:orientation="horizontal"
-        android:paddingTop="20dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/linear_card_number"
-        android:layout_gravity="center"
+        android:layout_height="0dp"
+        android:layout_weight=".7"
         android:gravity="center">
 
         <ImageView
             android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:id="@+id/imageCardType"
             android:padding="5dp"
             android:src="@drawable/ic_lastfm"
-            android:layout_gravity="center"/>
+            />
 
         <EditText
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:inputType="text"
-            android:textColor="@android:color/white"
             android:id="@+id/username_text"
             android:hint="@string/user_name"
-            android:textColorHint="@android:color/white"
-            android:layout_gravity="center"/>
+            />
         <ImageView
             android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_navigation_next_item"
             android:id="@+id/submit_user_button"
-            android:layout_gravity="center"/>
+            />
 
     </LinearLayout>
 

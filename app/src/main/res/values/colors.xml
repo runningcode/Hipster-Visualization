@@ -2,4 +2,5 @@
 <resources>
     <color name="trans_white">#CCCCFFFF</color>
     <color name="blue">#CC5B899C</color>
+    <color name="text_hint">#88FFFFFF</color>
 </resources>

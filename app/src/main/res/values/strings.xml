@@ -4,12 +4,17 @@
     <string name="app_name">ster</string>
     <string name="action_settings">Settings</string>
     <string name="PREF_SAVED_HISTORY">pref_saved_history</string>
+
+    <!-- image descriptions -->
     <string name="track_image_desc">Track Image</string>
     <string name="artist_image_desc">Artist Image</string>
+
+    <!-- hipster classification buttons -->
     <string name="yes_text">Hipster</string>
     <string name="no_text">Not hipster</string>
     <string name="dunno_text">Never heard of it</string>
-    <string name="user_name">lastfm username</string>
-    <string name="invalid_name">input a valid username</string>
+
+    <string name="user_name">last.fm username</string>
+    <string name="invalid_name">Please input a valid username</string>
 
 </resources>

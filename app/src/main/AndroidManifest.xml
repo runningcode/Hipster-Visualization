@@ -22,7 +22,9 @@
 
         <activity android:name="com.osacky.hipsterviz.LoginActivity_"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.Hipster.Launcher">
+            android:theme="@style/AppTheme.Hipster.Launcher"
+            android:windowSoftInputMode="adjustResize">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
