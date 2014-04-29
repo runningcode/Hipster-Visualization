@@ -10,10 +10,6 @@ public class RealTrackWithTags extends RealBaseTrack {
     String tagStrings;
     TopTags toptags;
 
-    public class TopTags {
-        List<Tag> tag;
-    }
-
     public String getToptags() {
         if (tagStrings == null) {
             StringWriter stringWriter = new StringWriter();
@@ -24,5 +20,9 @@ public class RealTrackWithTags extends RealBaseTrack {
             tagStrings = stringWriter.toString();
         }
         return tagStrings;
+    }
+
+    public class TopTags {
+        List<Tag> tag;
     }
 }

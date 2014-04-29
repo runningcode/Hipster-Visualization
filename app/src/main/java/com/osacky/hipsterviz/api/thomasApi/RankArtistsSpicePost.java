@@ -19,9 +19,6 @@ public class RankArtistsSpicePost extends RetrofitSpiceRequest<RankArtistsSpiceP
 
     private final String mArtistIds;
 
-    public static class ArtistLookup extends HashMap<String, ArtistDataResponse>{}
-
-
     public RankArtistsSpicePost(String artistIds) {
         super(ArtistLookup.class, ThomasApi.class);
         mArtistIds = "{ \"artists\" : " + artistIds + "}";
@@ -42,5 +39,8 @@ public class RankArtistsSpicePost extends RetrofitSpiceRequest<RankArtistsSpiceP
             artistLookup.put(artistData.getArtistId(), artistData);
         }
         return artistLookup;
+    }
+
+    public static class ArtistLookup extends HashMap<String, ArtistDataResponse> {
     }
 }

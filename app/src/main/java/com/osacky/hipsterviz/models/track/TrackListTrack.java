@@ -18,15 +18,11 @@ import java.util.ArrayList;
 
 public class TrackListTrack extends BaseTrack {
 
-    public static class BaseTrackList extends ArrayList<TrackListTrack> {
-    }
-
+    private static int density;
     BaseAlbum album;
     FakeArtist artist;
     ArrayList<ImageObject> image;
-    private static int density;
     Date date;
-
     @SerializedName("@attr")
     @Nullable
     IsNowPlaying isNowPlaying;
@@ -61,6 +57,9 @@ public class TrackListTrack extends BaseTrack {
     @Override
     public BaseAlbum getAlbum() {
         return album;
+    }
+
+    public static class BaseTrackList extends ArrayList<TrackListTrack> {
     }
 
     private class IsNowPlaying {

@@ -12,70 +12,65 @@ import android.widget.TextView;
 
 public class FontFitTextView extends TextView {
 
+    private Paint mTestPaint = new Paint();
+
+    {
+        mTestPaint.set(getPaint());
+    }
+
+    @SuppressWarnings("unused")
     public FontFitTextView(Context context) {
         super(context);
-        initialise();
     }
 
-    public FontFitTextView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        initialise();
-    }
-
-    private void initialise() {
-        mTestPaint = new Paint();
-        mTestPaint.set(this.getPaint());
-        //max size defaults to the initially specified text size unless it is too small
+    @SuppressWarnings("unused")
+    public FontFitTextView(Context context, AttributeSet attributeSet) {
+        super(context, attributeSet);
     }
 
     /* Re size the font so the specified text fits in the text box
      * assuming the text box is the specified width.
      */
-    private void refitText(String text, int textWidth)
-    {
+    private void refitText(String text, int textWidth) {
         if (textWidth <= 0)
             return;
-        int targetWidth = textWidth - this.getPaddingLeft() - this.getPaddingRight();
+        int targetWidth = textWidth - getPaddingLeft() - getPaddingRight();
         float hi = 100;
         float lo = 2;
         final float threshold = 0.5f; // How close we have to be
 
-        mTestPaint.set(this.getPaint());
+        mTestPaint.set(getPaint());
 
-        while((hi - lo) > threshold) {
-            float size = (hi+lo)/2;
+        while ((hi - lo) > threshold) {
+            float size = (hi + lo) / 2;
             mTestPaint.setTextSize(size);
-            if(mTestPaint.measureText(text) >= targetWidth)
+            if (mTestPaint.measureText(text) >= targetWidth)
                 hi = size; // too big
             else
                 lo = size; // too small
         }
         // Use lo so that we undershoot rather than overshoot
-        this.setTextSize(TypedValue.COMPLEX_UNIT_PX, lo);
+        setTextSize(TypedValue.COMPLEX_UNIT_PX, lo);
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-    {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
         int height = getMeasuredHeight();
         refitText(getText().toString(), parentWidth);
-        this.setMeasuredDimension(parentWidth, height);
+        setMeasuredDimension(parentWidth, height);
     }
 
     @Override
     protected void onTextChanged(final CharSequence text, final int start, final int before, final int after) {
-        refitText(text.toString(), this.getWidth());
+        refitText(text.toString(), getWidth());
     }
 
     @Override
-    protected void onSizeChanged (int w, int h, int oldw, int oldh) {
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         if (w != oldw) {
             refitText(getText().toString(), w);
         }
     }
-
-    //Attributes
-    private Paint mTestPaint;
 }

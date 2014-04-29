@@ -20,8 +20,6 @@ import org.androidannotations.annotations.ViewById;
 public class TrackDetailFragment extends BaseSpiceFragment
         implements RequestListener<RealBaseTrack> {
 
-    private Picasso mPicasso;
-
     @ViewById(R.id.track_image)
     ImageView trackImage;
 
@@ -36,6 +34,8 @@ public class TrackDetailFragment extends BaseSpiceFragment
 
     @ViewById(R.id.track_wiki)
     TextView wiki;
+
+    private Picasso mPicasso;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -17,6 +17,14 @@ public class LastFmSpiceService extends RetrofitGsonSpiceService {
 
     private static final String API_URL = "http://ws.audioscrobbler.com/2.0";
     private static final String API_KEY = "6fd005476f0fdb0e31903f9867f995c2";
+    private static final RequestInterceptor requestInterceptor = new RequestInterceptor() {
+        @Override
+        public void intercept(RequestFacade requestFacade) {
+            requestFacade.addHeader("User-Agent", "Hipster-Visualizer-Android");
+            requestFacade.addQueryParam("api_key", API_KEY);
+            requestFacade.addQueryParam("format", "json");
+        }
+    };
 
     @Override
     protected String getServerUrl() {
@@ -39,15 +47,6 @@ public class LastFmSpiceService extends RetrofitGsonSpiceService {
                 .registerTypeAdapter(RealBaseArtist.class, new ArtistDeserializer<RealBaseArtist>())
                 .create());
     }
-
-    private static final RequestInterceptor requestInterceptor = new RequestInterceptor() {
-        @Override
-        public void intercept(RequestFacade requestFacade) {
-            requestFacade.addHeader("User-Agent", "Hipster-Visualizer-Android");
-            requestFacade.addQueryParam("api_key", API_KEY);
-            requestFacade.addQueryParam("format", "json");
-        }
-    };
 
     @Override
     protected RestAdapter.Builder createRestAdapterBuilder() {

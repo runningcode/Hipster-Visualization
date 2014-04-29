@@ -5,7 +5,7 @@ import com.osacky.hipsterviz.models.Tag;
 import java.io.StringWriter;
 import java.util.List;
 
-public class RealArtistWithTags extends RealBaseArtist{
+public class RealArtistWithTags extends RealBaseArtist {
     Tags tags;
     String tagStrings;
 

@@ -8,12 +8,10 @@ public class RankSpicePost extends RetrofitSpiceRequest<String, ThomasApi> {
 
     @SuppressWarnings("unused")
     private static final String TAG = "RequestArtistSpiceRequest";
-
-    private final String mArtistId;
-    private final String mClassification;
-
     // hack so we never send the same request twice (as long as the cache isn't cleared)
     private static final long cacheDuration = DurationInMillis.ALWAYS_RETURNED;
+    private final String mArtistId;
+    private final String mClassification;
 
 
     public RankSpicePost(String artistId, String classification) {

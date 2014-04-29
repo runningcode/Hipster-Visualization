@@ -8,18 +8,17 @@ import retrofit.RestAdapter;
 public class ThomasApiService extends RetrofitGsonSpiceService {
 
     private static final String API_URL = "http://thomasdeegan.com:3030";
-
-    @Override
-    protected String getServerUrl() {
-        return API_URL;
-    }
-
     private static final RequestInterceptor requestInterceptor = new RequestInterceptor() {
         @Override
         public void intercept(RequestFacade requestFacade) {
             requestFacade.addHeader("Content-Type", "application/json");
         }
     };
+
+    @Override
+    protected String getServerUrl() {
+        return API_URL;
+    }
 
     @Override
     protected RestAdapter.Builder createRestAdapterBuilder() {

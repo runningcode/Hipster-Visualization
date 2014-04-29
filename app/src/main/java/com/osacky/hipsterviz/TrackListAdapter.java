@@ -23,14 +23,10 @@ public class TrackListAdapter extends BaseAdapter {
 
     @SuppressWarnings("unused")
     private static final String TAG = "TrackListAdapter";
-
+    private final Object mLock = new Object();
     @RootContext
     Context mContext;
-
     private SharedPreferences mSharedPreferences;
-
-    private final Object mLock = new Object();
-
     private TrackListTrack.BaseTrackList mTracks = new TrackListTrack.BaseTrackList();
 
     private long firstMillis;

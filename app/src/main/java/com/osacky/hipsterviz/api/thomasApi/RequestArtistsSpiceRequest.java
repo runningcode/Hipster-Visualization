@@ -9,9 +9,8 @@ public class RequestArtistsSpiceRequest extends RetrofitSpiceRequest<ArtistDataR
 
     @SuppressWarnings("unused")
     private static final String TAG = "RequestArtistSpiceRequest";
-
-    private final int mLimit;
     private static final long cacheDuration = DurationInMillis.ALWAYS_EXPIRED;
+    private final int mLimit;
 
     public RequestArtistsSpiceRequest(int limit) {
         super(ArtistDataResponse.ArtistList.class, ThomasApi.class);

@@ -6,11 +6,8 @@ import java.util.ArrayList;
 
 public class ArtistDataResponse {
 
-    public static class ArtistList extends ArrayList<ArtistDataResponse> {}
-
     @SerializedName("artist_id")
     String artistId;
-
     int sum;
     int hipster;
     int notHipster;
@@ -34,5 +31,8 @@ public class ArtistDataResponse {
 
     public int getUnknown() {
         return unknown;
+    }
+
+    public static class ArtistList extends ArrayList<ArtistDataResponse> {
     }
 }

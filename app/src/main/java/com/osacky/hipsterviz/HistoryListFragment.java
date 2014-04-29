@@ -24,15 +24,14 @@ import org.androidannotations.annotations.ItemClick;
 public class HistoryListFragment extends BaseSpiceListFragment
         implements RequestListener<TrackHistoryPage>, AbsListView.OnScrollListener {
 
-    @SuppressWarnings("unused")
-    private static final String TAG = "PlaceHolderFragment";
     public static final int PLACES_BEFORE_BOTTOM = 50;
     public static final float PAGE_SIZE = 200f;
-    private boolean mDataChanged = false;
-    private boolean mScrollStateIdle = true;
-
+    @SuppressWarnings("unused")
+    private static final String TAG = "PlaceHolderFragment";
     @Bean
     TrackListAdapter trackListAdapter;
+    private boolean mDataChanged = false;
+    private boolean mScrollStateIdle = true;
 
     public HistoryListFragment() {
     }
