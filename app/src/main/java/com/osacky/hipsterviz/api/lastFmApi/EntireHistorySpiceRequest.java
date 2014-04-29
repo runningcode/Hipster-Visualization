@@ -24,6 +24,14 @@ public class EntireHistorySpiceRequest extends RetrofitSpiceRequest<EntireHistor
     public static class EntireHistoryResponse {
         HashSet<String> allArtists = new HashSet<String>();
         SparseArray<List<String>> historyMap = new SparseArray<List<String>>();
+
+        public HashSet<String> getAllArtists() {
+            return allArtists;
+        }
+
+        public SparseArray<List<String>> getHistoryMap() {
+            return historyMap;
+        }
     }
 
     private final String mUsername;

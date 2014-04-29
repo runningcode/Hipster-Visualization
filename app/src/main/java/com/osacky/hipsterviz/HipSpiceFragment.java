@@ -6,14 +6,17 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.CachedSpiceRequest;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.octo.android.robospice.request.listener.RequestProgress;
 import com.octo.android.robospice.request.listener.RequestProgressListener;
@@ -21,6 +24,7 @@ import com.osacky.hipsterviz.api.LoadingInterface;
 import com.osacky.hipsterviz.api.lastFmApi.ArtistSpiceRequest;
 import com.osacky.hipsterviz.api.lastFmApi.EntireHistorySpiceRequest;
 import com.osacky.hipsterviz.api.lastFmApi.LastFmSpiceService;
+import com.osacky.hipsterviz.api.thomasApi.RankArtistsSpicePost;
 import com.osacky.hipsterviz.api.thomasApi.RankSpicePost;
 import com.osacky.hipsterviz.api.thomasApi.RequestArtistsSpiceRequest;
 import com.osacky.hipsterviz.api.thomasApi.ThomasApiService;
@@ -204,11 +208,29 @@ public class HipSpiceFragment extends Fragment {
             for (ArtistDataResponse artistDataResponse : artistDataResponses) {
                 mArtistIdList.add(artistDataResponse.getArtistId());
             }
-            if (!mArtistIdList.isEmpty()) {
-                getLastFmSpiceManager().execute(
-                        ArtistSpiceRequest.getCachedSpiceRequest(mArtistIdList.get(0), true),
-                        new ArtistDetailRequestListener());
+            loadFirstArtist();
+        }
+    }
+
+    private void loadFirstArtist() {
+        if (!mArtistIdList.isEmpty()) {
+            CachedSpiceRequest<RealArtist> cachedSpiceRequest;
+            /*  what a bad-ass motherfucking regex
+             *  this checks if the id is an mbid or an actual artist name
+             */
+            if (mArtistIdList.get(0).matches("^([0-9a-f]*-[0-9a-f]*){4}$")) {
+                Log.i(TAG, "matches regex " + mArtistIdList.get(0));
+                cachedSpiceRequest = ArtistSpiceRequest.getCachedSpiceRequest(
+                        mArtistIdList.get(0), true);
+            } else {
+                Log.i(TAG, "doesn't match regex " + mArtistIdList.get(0));
+                cachedSpiceRequest = ArtistSpiceRequest.getCachedSpiceRequest(
+                        mArtistIdList.get(0), false);
             }
+            getLastFmSpiceManager().execute(
+                    cachedSpiceRequest,
+                    new ArtistDetailRequestListener()
+            );
         }
     }
 
@@ -232,12 +254,9 @@ public class HipSpiceFragment extends Fragment {
                 if (totalRated > 10 && loadingDone) {
                     Toast.makeText(getActivity(), "Done rating!", Toast.LENGTH_SHORT).show();
                     // TODO we're done!
-                } else if (mArtistIdList.size() >= 2) {
+                } else if (mArtistIdList.size() >= 1) {
                     mArtistIdList.remove(0);
-                    getLastFmSpiceManager().execute(
-                            ArtistSpiceRequest.getCachedSpiceRequest(mArtistIdList.get(0), true),
-                            new ArtistDetailRequestListener()
-                    );
+                    loadFirstArtist();
                 } else {
                     Toast.makeText(getActivity(), "Need more people to rate!", Toast.LENGTH_SHORT).show();
                     //TODO load more people to rate
@@ -269,6 +288,20 @@ public class HipSpiceFragment extends Fragment {
         }
     }
 
+    private class RankArtistsPostRequestListener
+            implements RequestListener<ArtistDataResponse.ArtistList> {
+
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            showToast(spiceException);
+        }
+
+        @Override
+        public void onRequestSuccess(ArtistDataResponse.ArtistList artistDataResponses) {
+            Log.i(TAG, "first artist id is " + artistDataResponses.get(0).getArtistId());
+        }
+    }
+
     private class EntireHistoryRequestListener
             implements RequestListener<EntireHistorySpiceRequest.EntireHistoryResponse>,
             RequestProgressListener {
@@ -282,6 +315,14 @@ public class HipSpiceFragment extends Fragment {
         public void onRequestSuccess(EntireHistorySpiceRequest.EntireHistoryResponse historyMap) {
             loadingDone = true;
             loadingInterface.onLoadingFinished();
+            // HOLY SHIT THIS IS AMAZING
+            String artistIds = new Gson().toJson(historyMap.getAllArtists());
+
+            Log.i(TAG, "THE IDS ARE " + artistIds);
+            getThomasSpiceManager().execute(
+                    RankArtistsSpicePost.getCachedSpiceRequest(artistIds),
+                    new RankArtistsPostRequestListener()
+            );
         }
 
         @Override
