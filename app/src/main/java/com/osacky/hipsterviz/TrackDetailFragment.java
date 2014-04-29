@@ -17,7 +17,8 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
 @EFragment(R.layout.fragment_track_detail)
-public class TrackDetailFragment extends BaseSpiceFragment implements RequestListener<RealBaseTrack> {
+public class TrackDetailFragment extends BaseSpiceFragment
+        implements RequestListener<RealBaseTrack> {
 
     private Picasso mPicasso;
 
@@ -49,6 +50,7 @@ public class TrackDetailFragment extends BaseSpiceFragment implements RequestLis
     public void loadData(String track, String artist) {
         getSpiceManager().execute(TrackSpiceRequest.getCachedSpiceRequest(track, artist), this);
     }
+
     @Override
     public void onRequestFailure(SpiceException spiceException) {
 
@@ -58,9 +60,9 @@ public class TrackDetailFragment extends BaseSpiceFragment implements RequestLis
     public void onRequestSuccess(RealBaseTrack realTrack) {
         String topTags = "No tags";
         if (realTrack instanceof RealTrackWithTags) {
-            topTags = ((RealTrackWithTags)realTrack).getToptags();
+            topTags = ((RealTrackWithTags) realTrack).getToptags();
         } else if (realTrack instanceof RealTrackWithOneTag) {
-            topTags = ((RealTrackWithOneTag)realTrack).getToptags();
+            topTags = ((RealTrackWithOneTag) realTrack).getToptags();
         }
         tags.setText(topTags);
         trackTitle.setText(realTrack.getName());

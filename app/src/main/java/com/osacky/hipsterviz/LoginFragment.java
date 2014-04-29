@@ -16,9 +16,9 @@ public class LoginFragment extends BaseSpiceFragment {
     EditText username;
 
     @Click(R.id.submit_user_button)
-    void submitButtonClicked(){
+    void submitButtonClicked() {
         //TODO: validate user
-        if(username.getText() == null || username.length()==0) {
+        if (username.getText() == null || username.length() == 0) {
             Toast.makeText(getActivity(), getString(R.string.invalid_name), Toast.LENGTH_SHORT).show();
         } else {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());

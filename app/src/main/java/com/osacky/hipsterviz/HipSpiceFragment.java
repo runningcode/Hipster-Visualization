@@ -17,6 +17,7 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.octo.android.robospice.request.listener.RequestProgress;
 import com.octo.android.robospice.request.listener.RequestProgressListener;
+import com.osacky.hipsterviz.api.LoadingInterface;
 import com.osacky.hipsterviz.api.lastFmApi.ArtistSpiceRequest;
 import com.osacky.hipsterviz.api.lastFmApi.EntireHistorySpiceRequest;
 import com.osacky.hipsterviz.api.lastFmApi.LastFmSpiceService;
@@ -99,18 +100,19 @@ public class HipSpiceFragment extends Fragment {
                 imageSize = imageView.getMeasuredHeight();
                 try {
                     viewTreeObserver.removeOnPreDrawListener(this);
-                } catch (IllegalStateException ignored) {}
+                } catch (IllegalStateException ignored) {
+                }
                 roundedTransformation = new RoundedTransformation(
-                    imageSize /2,
-                    5,
-                    getResources().getColor(android.R.color.white),
-                    (int) getResources().getDimension(R.dimen.artist_border_radius)
+                        imageSize / 2,
+                        5,
+                        getResources().getColor(android.R.color.white),
+                        (int) getResources().getDimension(R.dimen.artist_border_radius)
                 );
                 return true;
             }
         });
         Typeface boldFace = Typeface.createFromAsset(getResources().getAssets(), "fonts/OpenSans-Bold.ttf");
-        Typeface normalFace= Typeface.createFromAsset(getResources().getAssets(), "fonts/OpenSans-Regular.ttf");
+        Typeface normalFace = Typeface.createFromAsset(getResources().getAssets(), "fonts/OpenSans-Regular.ttf");
 
         artistName.setTypeface(boldFace);
         yesText.setTypeface(normalFace);
@@ -137,7 +139,10 @@ public class HipSpiceFragment extends Fragment {
     private void rankArtist(String classification) {
         if (!mArtistIdList.isEmpty()) {
             loadingInterface.onLoadingStarted();
-            getThomasSpiceManager().execute(RankSpicePost.getCachedSpiceRequest(mArtistIdList.get(0), classification), new RankArtistRequestListener());
+            getThomasSpiceManager().execute(
+                    RankSpicePost.getCachedSpiceRequest(mArtistIdList.get(0), classification),
+                    new RankArtistRequestListener()
+            );
         }
     }
 
@@ -155,8 +160,14 @@ public class HipSpiceFragment extends Fragment {
     public void onStart() {
         thomasSpiceManager.start(getActivity());
         lastFmSpiceManager.start(getActivity());
-        getThomasSpiceManager().execute(RequestArtistsSpiceRequest.getCachedSpiceRequest(100), new ArtistListRequestListener());
-        getLastFmSpiceManager().execute(EntireHistorySpiceRequest.getCachedSpiceRequest(username), new EntireHistoryRequestListener());
+        getThomasSpiceManager().execute(
+                RequestArtistsSpiceRequest.getCachedSpiceRequest(100),
+                new ArtistListRequestListener()
+        );
+        getLastFmSpiceManager().execute(
+                EntireHistorySpiceRequest.getCachedSpiceRequest(username),
+                new EntireHistoryRequestListener()
+        );
         super.onStart();
     }
 
@@ -175,6 +186,7 @@ public class HipSpiceFragment extends Fragment {
     protected SpiceManager getThomasSpiceManager() {
         return thomasSpiceManager;
     }
+
     protected SpiceManager getLastFmSpiceManager() {
         return lastFmSpiceManager;
     }
@@ -193,7 +205,9 @@ public class HipSpiceFragment extends Fragment {
                 mArtistIdList.add(artistDataResponse.getArtistId());
             }
             if (!mArtistIdList.isEmpty()) {
-                getLastFmSpiceManager().execute(ArtistSpiceRequest.getCachedSpiceRequest(mArtistIdList.get(0), true), new ArtistDetailRequestListener());
+                getLastFmSpiceManager().execute(
+                        ArtistSpiceRequest.getCachedSpiceRequest(mArtistIdList.get(0), true),
+                        new ArtistDetailRequestListener());
             }
         }
     }
@@ -220,7 +234,10 @@ public class HipSpiceFragment extends Fragment {
                     // TODO we're done!
                 } else if (mArtistIdList.size() >= 2) {
                     mArtistIdList.remove(0);
-                    getLastFmSpiceManager().execute(ArtistSpiceRequest.getCachedSpiceRequest(mArtistIdList.get(0), true), new ArtistDetailRequestListener());
+                    getLastFmSpiceManager().execute(
+                            ArtistSpiceRequest.getCachedSpiceRequest(mArtistIdList.get(0), true),
+                            new ArtistDetailRequestListener()
+                    );
                 } else {
                     Toast.makeText(getActivity(), "Need more people to rate!", Toast.LENGTH_SHORT).show();
                     //TODO load more people to rate
@@ -244,11 +261,17 @@ public class HipSpiceFragment extends Fragment {
         public void onRequestSuccess(RealArtist realArtist) {
             loadingInterface.onLoadingFinished();
             artistName.setText(realArtist.getName());
-            mPicasso.load(realArtist.getImage(getActivity())).centerCrop().resize(imageSize, imageSize).transform(roundedTransformation).into(imageView);
+            mPicasso.load(realArtist.getImage(getActivity()))
+                    .centerCrop()
+                    .resize(imageSize, imageSize)
+                    .transform(roundedTransformation)
+                    .into(imageView);
         }
     }
 
-    private class EntireHistoryRequestListener implements RequestListener<EntireHistorySpiceRequest.HistoryMap>, RequestProgressListener {
+    private class EntireHistoryRequestListener
+            implements RequestListener<EntireHistorySpiceRequest.HistoryMap>,
+            RequestProgressListener {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {

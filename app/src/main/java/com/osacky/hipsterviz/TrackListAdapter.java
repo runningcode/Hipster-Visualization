@@ -38,7 +38,7 @@ public class TrackListAdapter extends BaseAdapter {
 
     public TrackListAdapter() {
     }
-    
+
     @AfterInject
     void initAdapter() {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -119,7 +119,7 @@ public class TrackListAdapter extends BaseAdapter {
 
     private void setMillis() {
         firstMillis = mTracks.get(0).getDateTime().getMillis();
-        lastMillis = mTracks.get(getCount()-1).getDateTime().getMillis();
+        lastMillis = mTracks.get(getCount() - 1).getDateTime().getMillis();
     }
 
     @Background

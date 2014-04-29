@@ -15,7 +15,9 @@ abstract class BaseTrack {
     String url;
 
     public abstract FakeArtist getArtist();
+
     public abstract Uri getImage(@NotNull Context context);
+
     public abstract BaseAlbum getAlbum();
 
     public String getName() {

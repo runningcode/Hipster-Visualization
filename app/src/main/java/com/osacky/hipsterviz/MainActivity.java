@@ -6,6 +6,8 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.view.Window;
 
+import com.osacky.hipsterviz.api.LoadingInterface;
+import com.osacky.hipsterviz.utils.TypefaceSpan;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import org.androidannotations.annotations.EActivity;
@@ -33,7 +35,12 @@ public class MainActivity extends ActionBarActivity implements LoadingInterface 
         tintManager.setStatusBarTintEnabled(true);
         tintManager.setStatusBarTintResource(R.color.blue);
         SpannableString spannableString = new SpannableString(getString(R.string.app_name));
-        spannableString.setSpan(new TypefaceSpan(this, "OpenSans-Regular.ttf"), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(
+                new TypefaceSpan(this, "OpenSans-Regular.ttf"),
+                0,
+                spannableString.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
         getSupportActionBar().setTitle(spannableString);
     }
 

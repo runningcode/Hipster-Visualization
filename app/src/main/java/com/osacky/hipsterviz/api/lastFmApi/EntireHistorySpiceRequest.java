@@ -5,10 +5,10 @@ import android.util.Log;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.request.CachedSpiceRequest;
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
-import com.osacky.hipsterviz.Utils;
 import com.osacky.hipsterviz.models.Attr;
 import com.osacky.hipsterviz.models.TrackHistoryPage;
 import com.osacky.hipsterviz.models.track.TrackListTrack;
+import com.osacky.hipsterviz.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +19,8 @@ public class EntireHistorySpiceRequest extends RetrofitSpiceRequest<EntireHistor
     @SuppressWarnings("unused")
     private static final String TAG = "UserHistorySpiceRequest";
 
-    public static class HistoryMap extends HashMap<Long, List<String>>{}
+    public static class HistoryMap extends HashMap<Long, List<String>> {
+    }
 
     private final String mUsername;
     private int totalPages = Integer.MAX_VALUE;

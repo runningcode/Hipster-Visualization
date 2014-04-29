@@ -31,7 +31,7 @@ public class RealBaseTrack extends BaseTrack {
     }
 
     public Uri getImage(@NotNull Context context) {
-        if(album == null) {
+        if (album == null) {
             return null;
         }
         if (density == 0) {

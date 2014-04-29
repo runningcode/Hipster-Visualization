@@ -21,7 +21,8 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ItemClick;
 
 @EFragment
-public class HistoryListFragment extends BaseSpiceListFragment implements RequestListener<TrackHistoryPage>, AbsListView.OnScrollListener {
+public class HistoryListFragment extends BaseSpiceListFragment
+        implements RequestListener<TrackHistoryPage>, AbsListView.OnScrollListener {
 
     @SuppressWarnings("unused")
     private static final String TAG = "PlaceHolderFragment";
@@ -50,7 +51,14 @@ public class HistoryListFragment extends BaseSpiceListFragment implements Reques
         super.onResume();
         if (getListAdapter().isEmpty()) {
             loadingInterface.onLoadingStarted();
-            getSpiceManager().execute(HistoryPageSpiceRequest.getCachedSpiceRequest("nosacky", 1, DurationInMillis.ALWAYS_RETURNED) , this);
+            getSpiceManager().execute(
+                    HistoryPageSpiceRequest.getCachedSpiceRequest(
+                            "nosacky",
+                            1,
+                            DurationInMillis.ALWAYS_RETURNED
+                    ),
+                    this
+            );
         } else {
             setListShown(true);
         }
@@ -121,11 +129,20 @@ public class HistoryListFragment extends BaseSpiceListFragment implements Reques
     }
 
     @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        if ((firstVisibleItem + visibleItemCount) >= (totalItemCount - PLACES_BEFORE_BOTTOM) && mScrollStateIdle) {
+    public void onScroll(
+            AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        if ((firstVisibleItem + visibleItemCount) >= (totalItemCount - PLACES_BEFORE_BOTTOM)
+                && mScrollStateIdle) {
             mScrollStateIdle = false;
             loadingInterface.onLoadingStarted();
-            getSpiceManager().execute(HistoryPageSpiceRequest.getCachedSpiceRequest("nosacky", Math.round(totalItemCount/ PAGE_SIZE) + 1, DurationInMillis.ALWAYS_RETURNED), this);
+            getSpiceManager().execute(
+                    HistoryPageSpiceRequest.getCachedSpiceRequest(
+                            "nosacky",
+                            Math.round(totalItemCount / PAGE_SIZE) + 1,
+                            DurationInMillis.ALWAYS_RETURNED
+                    ),
+                    this
+            );
         }
     }
 }

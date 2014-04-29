@@ -7,9 +7,10 @@ import android.support.v4.app.ListFragment;
 import android.view.View;
 
 import com.octo.android.robospice.SpiceManager;
+import com.osacky.hipsterviz.api.LoadingInterface;
 import com.osacky.hipsterviz.api.lastFmApi.LastFmSpiceService;
 
-public abstract class BaseSpiceListFragment extends ListFragment {
+abstract class BaseSpiceListFragment extends ListFragment {
 
     protected LoadingInterface loadingInterface;
 

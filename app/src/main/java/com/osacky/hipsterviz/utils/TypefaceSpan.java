@@ -1,4 +1,4 @@
-package com.osacky.hipsterviz;
+package com.osacky.hipsterviz.utils;
 
 import android.content.Context;
 import android.graphics.Paint;
@@ -8,8 +8,8 @@ import android.text.TextPaint;
 import android.text.style.MetricAffectingSpan;
 
 /**
- * Style a {@link android.text.Spannable} with a custom {@link Typeface}.
- *
+ * Style a {@link android.text.Spannable} with a custom {@link android.graphics.Typeface}.
+ * <p/>
  * http://stackoverflow.com/questions/8607707/how-to-set-a-custom-font-in-the-actionbar-title
  *
  * @author Tristan Waddington
@@ -17,14 +17,16 @@ import android.text.style.MetricAffectingSpan;
 public class TypefaceSpan extends MetricAffectingSpan {
     public static final int MAX_SIZE = 12;
 
-    /** An <code>LruCache</code> for previously loaded typefaces. */
+    /**
+     * An <code>LruCache</code> for previously loaded typefaces.
+     */
     private static LruCache<String, Typeface> sTypefaceCache =
             new LruCache<String, Typeface>(MAX_SIZE);
 
     private Typeface mTypeface;
 
     /**
-     * Load the {@link Typeface} and apply to a {@link android.text.Spannable}.
+     * Load the {@link android.graphics.Typeface} and apply to a {@link android.text.Spannable}.
      */
     public TypefaceSpan(Context context, String typefaceName) {
         mTypeface = sTypefaceCache.get(typefaceName);

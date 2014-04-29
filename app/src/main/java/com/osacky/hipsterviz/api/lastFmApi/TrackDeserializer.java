@@ -15,6 +15,7 @@ import java.lang.reflect.Type;
 
 @SuppressWarnings("unused")
 class TrackDeserializer<T extends RealBaseTrack> implements JsonDeserializer<RealBaseTrack> {
+
     private static final String TAG = "TrackDeserializer";
 
     public TrackDeserializer() {

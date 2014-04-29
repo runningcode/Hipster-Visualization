@@ -1,4 +1,4 @@
-package com.osacky.hipsterviz;
+package com.osacky.hipsterviz.utils;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
@@ -13,4 +13,5 @@ public class Utils {
         // Keep TimeZone and round floor to a day
         return new DateTime(t, dt.getZone()).dayOfMonth().roundFloorCopy();
     }
+
 }

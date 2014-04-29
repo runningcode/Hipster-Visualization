@@ -9,19 +9,23 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 
 
-// original idea here : http://www.curious-creature.org/2012/12/11/android-recipe-1-image-with-rounded-corners/
+// original idea here :
+// http://www.curious-creature.org/2012/12/11/android-recipe-1-image-with-rounded-corners/
 public class RoundedTransformation implements com.squareup.picasso.Transformation {
     private final int radius;
     private final int margin;  // dp
     private final int borderColor;
     private final int borderWidth;
 
-    /** Constructor
+    /**
+     * Constructor
      *
-     * @param radius corner radius (if you want a circle, make use image width/2
-     * @param margin margin?
-     * @param borderColor if you don't want a border, pass borderColor = 0  */
-    public RoundedTransformation(final int radius, final int margin, int borderColor, int borderWidth) {
+     * @param radius      corner radius (if you want a circle, make use image width/2
+     * @param margin      margin?
+     * @param borderColor if you don't want a border, pass borderColor = 0
+     */
+    public RoundedTransformation(
+            final int radius, final int margin, int borderColor, int borderWidth) {
         this.radius = radius;
         this.margin = margin;
         this.borderColor = borderColor;
@@ -37,14 +41,29 @@ public class RoundedTransformation implements com.squareup.picasso.Transformatio
         Bitmap output = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
         // draw the border first, if necessary
-        if(borderWidth > 0) {
+        if (borderWidth > 0) {
             final Paint border = new Paint();
             border.setAntiAlias(true);
-            border.setColor( borderColor );
-            canvas.drawRoundRect(new RectF(margin, margin, source.getWidth() - margin, source.getHeight() - margin), radius, radius, border);
+            border.setColor(borderColor);
+            canvas.drawRoundRect(new RectF(
+                            margin,
+                            margin,
+                            source.getWidth() - margin,
+                            source.getHeight() - margin
+                    ),
+                    radius, radius, border
+            );
         }
         // now draw the circular image on top
-        canvas.drawRoundRect(new RectF(margin+borderWidth, margin+borderWidth, source.getWidth() - margin-borderWidth, source.getHeight() - margin-borderWidth), radius-borderWidth, radius-borderWidth, paint);
+        canvas.drawRoundRect(
+                new RectF(
+                        margin + borderWidth,
+                        margin + borderWidth,
+                        source.getWidth() - margin - borderWidth,
+                        source.getHeight() - margin - borderWidth
+                ),
+                radius - borderWidth, radius - borderWidth, paint
+        );
 
         if (source != output) {
             source.recycle();
