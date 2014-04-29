@@ -23,22 +23,9 @@ public class ProcessScoreSpiceRequest
     private static final int UNKNOWN = -1;
     private static final int INDIE = 0;
     private static final int POP = 1;
-
+    private static final long cacheDuration = DurationInMillis.ALWAYS_RETURNED;
     private final EntireHistorySpiceRequest.EntireHistoryResponse mHistory;
     private final RankArtistsSpicePost.ArtistLookup mArtistResponse;
-
-    private static final long cacheDuration = DurationInMillis.ALWAYS_RETURNED;
-    public static class ScoreResponse {
-        SparseArray<Float> scoreArray = new SparseArray<Float>();
-        int totalArtists;
-        int totalHiptserArtists;
-        int totalPopArtists;
-        int totalHipsterArtistListens = 0;
-        int totalPopArtistListens = 0;
-        int totalListens;
-        HashMap<String, Integer> artistScoreLookup = new HashMap<String, Integer>();
-
-    }
 
     public ProcessScoreSpiceRequest(EntireHistorySpiceRequest.EntireHistoryResponse history,
                                     RankArtistsSpicePost.ArtistLookup artistResponse) {
@@ -51,7 +38,8 @@ public class ProcessScoreSpiceRequest
             (EntireHistorySpiceRequest.EntireHistoryResponse history,
              RankArtistsSpicePost.ArtistLookup artistList) {
         ProcessScoreSpiceRequest historyPageSpiceRequest = new ProcessScoreSpiceRequest(history, artistList);
-        return new CachedSpiceRequest<ScoreResponse>(historyPageSpiceRequest, history, cacheDuration);
+        return new CachedSpiceRequest<ScoreResponse>(historyPageSpiceRequest, "score",
+                cacheDuration);
     }
 
     @Override
@@ -59,7 +47,7 @@ public class ProcessScoreSpiceRequest
         ScoreResponse response = new ScoreResponse();
         for (String artist : mHistory.getAllArtists()) {
             RealBaseArtist artistInfoByName;
-            if(Utils.isMbid(artist)) {
+            if (Utils.isMbid(artist)) {
                 artistInfoByName = getService().getArtistInfoByMbid(artist);
             } else {
                 artistInfoByName = getService().getArtistInfoByName(artist);
@@ -67,7 +55,7 @@ public class ProcessScoreSpiceRequest
             final int classification = classifyArtist(artistInfoByName);
             switch (classification) {
                 case INDIE:
-                    response.totalHiptserArtists++;
+                    response.totalHipsterArtists++;
                     break;
                 case POP:
                     response.totalPopArtists++;
@@ -78,7 +66,7 @@ public class ProcessScoreSpiceRequest
         }
         final SparseArray<List<String>> historyMap = mHistory.getHistoryMap();
         int key;
-        for (int i = 0; i < historyMap.size(); i ++) {
+        for (int i = 0; i < historyMap.size(); i++) {
             key = historyMap.keyAt(i);
             final List<String> artistIds = historyMap.get(key);
             int songsForToday = artistIds.size();
@@ -95,7 +83,7 @@ public class ProcessScoreSpiceRequest
             }
             response.totalHipsterArtistListens += todayIndieListens;
             response.totalPopArtistListens += todayPopListens;
-            response.scoreArray.put(key, 1.0f * todayIndieListens/songsForToday);
+            response.scoreArray.put(key, 1.0f * todayIndieListens / songsForToday);
         }
         return response;
     }
@@ -116,7 +104,7 @@ public class ProcessScoreSpiceRequest
             // calculate score based on tags because we don't have votes yet
             if (tags.contains("indie")) {
                 return INDIE;
-            } else if (tags.contains("pop")){
+            } else if (tags.contains("pop")) {
                 return POP;
             } else {
                 return UNKNOWN;
@@ -129,5 +117,17 @@ public class ProcessScoreSpiceRequest
                 return UNKNOWN;
             }
         }
+    }
+
+    public static class ScoreResponse {
+        SparseArray<Float> scoreArray = new SparseArray<Float>();
+        int totalArtists;
+        int totalHipsterArtists;
+        int totalPopArtists;
+        int totalHipsterArtistListens = 0;
+        int totalPopArtistListens = 0;
+        int totalListens;
+        HashMap<String, Integer> artistScoreLookup = new HashMap<String, Integer>();
+
     }
 }

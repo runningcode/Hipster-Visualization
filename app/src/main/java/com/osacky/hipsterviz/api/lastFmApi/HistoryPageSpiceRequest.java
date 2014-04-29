@@ -7,7 +7,7 @@ import com.osacky.hipsterviz.models.TrackHistoryPage;
 public class HistoryPageSpiceRequest extends RetrofitSpiceRequest<TrackHistoryPage, LastFmApi> {
 
     @SuppressWarnings("unused")
-    private static final String TAG = "UserHistorySpiceRequest";
+    private static final String TAG = "HistoryPageSpiceRequest";
 
     private final String mUsername;
     private final int mPage;

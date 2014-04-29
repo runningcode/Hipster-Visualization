@@ -8,7 +8,7 @@ import com.osacky.hipsterviz.models.artist.RealBaseArtist;
 public class ArtistSpiceRequest extends RetrofitSpiceRequest<RealBaseArtist, LastFmApi> {
 
     @SuppressWarnings("unused")
-    private static final String TAG = "UserHistorySpiceRequest";
+    private static final String TAG = "ArtistSpiceRequest";
     private static final long cacheDuration = DurationInMillis.ALWAYS_EXPIRED;
 
     private final String mId;

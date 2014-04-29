@@ -19,25 +19,11 @@ public class EntireHistorySpiceRequest extends RetrofitSpiceRequest<EntireHistor
         LastFmApi> {
 
     @SuppressWarnings("unused")
-    private static final String TAG = "UserHistorySpiceRequest";
-
-    public static class EntireHistoryResponse {
-        HashSet<String> allArtists = new HashSet<String>();
-        SparseArray<List<String>> historyMap = new SparseArray<List<String>>();
-
-        public HashSet<String> getAllArtists() {
-            return allArtists;
-        }
-
-        public SparseArray<List<String>> getHistoryMap() {
-            return historyMap;
-        }
-    }
-
+    private static final String TAG = "EntireHistorySpiceRequest";
+    private static final long cacheDuration = DurationInMillis.ALWAYS_RETURNED;
     private final String mUsername;
     private int totalPages = Integer.MAX_VALUE;
     private int currentPage = 0;
-    private static final long cacheDuration = DurationInMillis.ALWAYS_RETURNED;
 
     public EntireHistorySpiceRequest(String username) {
         super(EntireHistoryResponse.class, LastFmApi.class);
@@ -70,7 +56,7 @@ public class EntireHistorySpiceRequest extends RetrofitSpiceRequest<EntireHistor
         int key;
         String identifier;
         for (TrackListTrack track : historyPage.getTrack()) {
-            key = (int) (Utils.roundDays(track.getDateTime()).getMillis()/1000);
+            key = (int) (Utils.roundDays(track.getDateTime()).getMillis() / 1000);
             identifier = track.getArtist().getIdentifier();
             List<String> identifiers = response.historyMap.get(key);
             if (identifiers == null) {
@@ -79,6 +65,19 @@ public class EntireHistorySpiceRequest extends RetrofitSpiceRequest<EntireHistor
             }
             identifiers.add(identifier);
             response.allArtists.add(identifier);
+        }
+    }
+
+    public static class EntireHistoryResponse {
+        HashSet<String> allArtists = new HashSet<String>();
+        SparseArray<List<String>> historyMap = new SparseArray<List<String>>();
+
+        public HashSet<String> getAllArtists() {
+            return allArtists;
+        }
+
+        public SparseArray<List<String>> getHistoryMap() {
+            return historyMap;
         }
     }
 }
