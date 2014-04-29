@@ -5,15 +5,13 @@ import android.net.Uri;
 import android.util.DisplayMetrics;
 
 import com.osacky.hipsterviz.models.ImageObject;
-import com.osacky.hipsterviz.models.Tag;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class RealArtist extends TrackArtist {
+public abstract class RealBaseArtist extends TrackArtist {
     List<ImageObject> image;
-    Tags tags;
     private int density;
 
     public Uri getImage(@NotNull Context context) {
@@ -31,11 +29,7 @@ public class RealArtist extends TrackArtist {
         }
     }
 
-    public List<Tag> getTags() {
-        return tags.tag;
-    }
+    public abstract String getTags();
 
-    class Tags {
-        List<Tag> tag;
-    }
+
 }

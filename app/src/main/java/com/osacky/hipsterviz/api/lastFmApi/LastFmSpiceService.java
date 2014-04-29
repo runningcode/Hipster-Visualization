@@ -4,7 +4,7 @@ import com.google.gson.GsonBuilder;
 import com.octo.android.robospice.retrofit.RetrofitGsonSpiceService;
 import com.osacky.hipsterviz.models.TrackHistoryPage;
 import com.osacky.hipsterviz.models.User;
-import com.osacky.hipsterviz.models.artist.RealArtist;
+import com.osacky.hipsterviz.models.artist.RealBaseArtist;
 import com.osacky.hipsterviz.models.track.RealBaseTrack;
 import com.osacky.hipsterviz.models.track.TrackListTrack;
 
@@ -33,9 +33,10 @@ public class LastFmSpiceService extends RetrofitGsonSpiceService {
         return new GsonConverter(new GsonBuilder()
                 .registerTypeAdapter(User.class, new LastFmDeserializer<User>("user"))
                 .registerTypeAdapter(TrackListTrack.class, new LastFmDeserializer<TrackListTrack>("track"))
-                .registerTypeAdapter(RealArtist.class, new LastFmDeserializer<RealArtist>("artist"))
+                .registerTypeAdapter(RealBaseArtist.class, new LastFmDeserializer<RealBaseArtist>("artist"))
                 .registerTypeAdapter(TrackHistoryPage.class, new LastFmDeserializer<TrackHistoryPage>("recenttracks"))
                 .registerTypeAdapter(RealBaseTrack.class, new TrackDeserializer<RealBaseTrack>())
+                .registerTypeAdapter(RealBaseArtist.class, new ArtistDeserializer<RealBaseArtist>())
                 .create());
     }
 

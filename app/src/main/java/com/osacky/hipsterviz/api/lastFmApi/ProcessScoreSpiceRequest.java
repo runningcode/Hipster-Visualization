@@ -8,8 +8,7 @@ import com.octo.android.robospice.request.CachedSpiceRequest;
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
 import com.osacky.hipsterviz.api.thomasApi.RankArtistsSpicePost;
 import com.osacky.hipsterviz.models.ArtistDataResponse;
-import com.osacky.hipsterviz.models.Tag;
-import com.osacky.hipsterviz.models.artist.RealArtist;
+import com.osacky.hipsterviz.models.artist.RealBaseArtist;
 import com.osacky.hipsterviz.utils.Utils;
 
 import java.util.HashMap;
@@ -59,7 +58,7 @@ public class ProcessScoreSpiceRequest
     public ScoreResponse loadDataFromNetwork() throws Exception {
         ScoreResponse response = new ScoreResponse();
         for (String artist : mHistory.getAllArtists()) {
-            RealArtist artistInfoByName;
+            RealBaseArtist artistInfoByName;
             if(Utils.isMbid(artist)) {
                 artistInfoByName = getService().getArtistInfoByMbid(artist);
             } else {
@@ -101,26 +100,29 @@ public class ProcessScoreSpiceRequest
         return response;
     }
 
-    private int classifyArtist(RealArtist realArtist) throws Exception {
+    private int classifyArtist(RealBaseArtist realArtist) throws Exception {
         String identifier = realArtist.getIdentifier();
         if (!mArtistResponse.containsKey(identifier)) {
             Log.i(TAG, "missing key " + identifier);
+            // this is a bug
             return UNKNOWN;
         }
         final ArtistDataResponse artistData = mArtistResponse.get(identifier);
-        if (realArtist.getTags().isEmpty() && artistData.getSum() == 0) {
+        final String tags = realArtist.getTags();
+        if (tags == null && artistData.getSum() == 0) {
+            // we don't have any data
             return UNKNOWN;
         } else if (artistData.getSum() == 0) {
-            // calculate score based on tags
-            for (Tag tag : realArtist.getTags()) {
-                if (tag.getName().equalsIgnoreCase("indie")) {
-                    return INDIE;
-                } else if (tag.getName().equalsIgnoreCase("pop")) {
-                    return POP;
-                }
+            // calculate score based on tags because we don't have votes yet
+            if (tags.contains("indie")) {
+                return INDIE;
+            } else if (tags.contains("pop")){
+                return POP;
+            } else {
+                return UNKNOWN;
             }
-            return UNKNOWN;
         } else {
+            // calculate score based on votes
             if (artistData.getHipster() > artistData.getNotHipster()) {
                 return INDIE;
             } else {

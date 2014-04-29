@@ -3,9 +3,9 @@ package com.osacky.hipsterviz.api.lastFmApi;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.request.CachedSpiceRequest;
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
-import com.osacky.hipsterviz.models.artist.RealArtist;
+import com.osacky.hipsterviz.models.artist.RealBaseArtist;
 
-public class ArtistSpiceRequest extends RetrofitSpiceRequest<RealArtist, LastFmApi> {
+public class ArtistSpiceRequest extends RetrofitSpiceRequest<RealBaseArtist, LastFmApi> {
 
     @SuppressWarnings("unused")
     private static final String TAG = "UserHistorySpiceRequest";
@@ -15,18 +15,18 @@ public class ArtistSpiceRequest extends RetrofitSpiceRequest<RealArtist, LastFmA
     private final boolean mIsMbid;
 
     public ArtistSpiceRequest(String id, boolean isMbid) {
-        super(RealArtist.class, LastFmApi.class);
+        super(RealBaseArtist.class, LastFmApi.class);
         mId = id;
         mIsMbid = isMbid;
     }
 
-    public static CachedSpiceRequest<RealArtist> getCachedSpiceRequest(String id, boolean isMbid) {
+    public static CachedSpiceRequest<RealBaseArtist> getCachedSpiceRequest(String id, boolean isMbid) {
         ArtistSpiceRequest historyPageSpiceRequest = new ArtistSpiceRequest(id, isMbid);
-        return new CachedSpiceRequest<RealArtist>(historyPageSpiceRequest, id, cacheDuration);
+        return new CachedSpiceRequest<RealBaseArtist>(historyPageSpiceRequest, id, cacheDuration);
     }
 
     @Override
-    public RealArtist loadDataFromNetwork() throws Exception {
+    public RealBaseArtist loadDataFromNetwork() throws Exception {
         if (mIsMbid) {
             return getService().getArtistInfoByMbid(mId);
         } else {

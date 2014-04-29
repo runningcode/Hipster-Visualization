@@ -29,7 +29,7 @@ import com.osacky.hipsterviz.api.thomasApi.RankSpicePost;
 import com.osacky.hipsterviz.api.thomasApi.RequestArtistsSpiceRequest;
 import com.osacky.hipsterviz.api.thomasApi.ThomasApiService;
 import com.osacky.hipsterviz.models.ArtistDataResponse;
-import com.osacky.hipsterviz.models.artist.RealArtist;
+import com.osacky.hipsterviz.models.artist.RealBaseArtist;
 import com.osacky.hipsterviz.utils.Utils;
 import com.squareup.picasso.Picasso;
 
@@ -73,10 +73,16 @@ public class HipSpiceFragment extends Fragment {
     private SpiceManager lastFmSpiceManager = new SpiceManager(LastFmSpiceService.class);
 
     private int imageSize;
-    private String username;
     private boolean loadingDone = false;
     private int totalRated = 0;
+
     private EntireHistorySpiceRequest.EntireHistoryResponse mHistory;
+    private CachedSpiceRequest<EntireHistorySpiceRequest.EntireHistoryResponse>
+            entireHistoryRequest;
+    private CachedSpiceRequest<ArtistDataResponse.ArtistList> artistListRequest =
+            RequestArtistsSpiceRequest.getCachedSpiceRequest(100);
+    private CachedSpiceRequest<ProcessScoreSpiceRequest.ScoreResponse> scoreResponseRequest;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,8 +90,11 @@ public class HipSpiceFragment extends Fragment {
         loadingInterface.onLoadingStarted();
         mPicasso = Picasso.with(getActivity().getApplicationContext());
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        username = sharedPreferences.getString(getString(R.string.PREF_USERNAME), "");
+        final String username = sharedPreferences.getString(getString(R.string.PREF_USERNAME), "");
         assert ((username != null) && (username.length() <= 0));
+        entireHistoryRequest = EntireHistorySpiceRequest.getCachedSpiceRequest(username);
+        getThomasSpiceManager().execute(artistListRequest, new ArtistListRequestListener());
+        getLastFmSpiceManager().execute(entireHistoryRequest, new EntireHistoryRequestListener());
     }
 
     @AfterViews
@@ -166,14 +175,6 @@ public class HipSpiceFragment extends Fragment {
     public void onStart() {
         thomasSpiceManager.start(getActivity());
         lastFmSpiceManager.start(getActivity());
-        getThomasSpiceManager().execute(
-                RequestArtistsSpiceRequest.getCachedSpiceRequest(100),
-                new ArtistListRequestListener()
-        );
-        getLastFmSpiceManager().execute(
-                EntireHistorySpiceRequest.getCachedSpiceRequest(username),
-                new EntireHistoryRequestListener()
-        );
         super.onStart();
     }
 
@@ -216,7 +217,7 @@ public class HipSpiceFragment extends Fragment {
 
     private void loadFirstArtist() {
         if (!mArtistIdList.isEmpty()) {
-            CachedSpiceRequest<RealArtist> cachedSpiceRequest;
+            CachedSpiceRequest<RealBaseArtist> cachedSpiceRequest;
             /*  what a bad-ass motherfucking regex
              *  this checks if the id is an mbid or an actual artist name
              */
@@ -230,7 +231,7 @@ public class HipSpiceFragment extends Fragment {
             }
             getLastFmSpiceManager().execute(
                     cachedSpiceRequest,
-                    new ArtistDetailRequestListener()
+                    artistRequestListener
             );
         }
     }
@@ -274,7 +275,7 @@ public class HipSpiceFragment extends Fragment {
         }
     }
 
-    private class ArtistDetailRequestListener implements RequestListener<RealArtist> {
+    RequestListener<RealBaseArtist> artistRequestListener = new RequestListener<RealBaseArtist>() {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
@@ -282,7 +283,7 @@ public class HipSpiceFragment extends Fragment {
         }
 
         @Override
-        public void onRequestSuccess(RealArtist realArtist) {
+        public void onRequestSuccess(RealBaseArtist realArtist) {
             loadingInterface.onLoadingFinished();
             artistName.setText(realArtist.getName());
             mPicasso.load(realArtist.getImage(getActivity()))
@@ -291,9 +292,7 @@ public class HipSpiceFragment extends Fragment {
                     .transform(roundedTransformation)
                     .into(imageView);
         }
-    }
-
-
+    };
 
     private class EntireHistoryRequestListener
             implements RequestListener<EntireHistorySpiceRequest.EntireHistoryResponse>,
@@ -313,7 +312,7 @@ public class HipSpiceFragment extends Fragment {
 
             getThomasSpiceManager().execute(
                     RankArtistsSpicePost.getCachedSpiceRequest(artistIds),
-                    new RankArtistsPostRequestListener()
+                    artistLookupListener
             );
         }
 
@@ -323,8 +322,8 @@ public class HipSpiceFragment extends Fragment {
         }
     }
 
-    private class RankArtistsPostRequestListener
-            implements RequestListener<RankArtistsSpicePost.ArtistLookup> {
+    RequestListener<RankArtistsSpicePost.ArtistLookup> artistLookupListener =
+            new RequestListener<RankArtistsSpicePost.ArtistLookup>(){
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
@@ -333,13 +332,15 @@ public class HipSpiceFragment extends Fragment {
 
         @Override
         public void onRequestSuccess(RankArtistsSpicePost.ArtistLookup artistDataResponses) {
-            getLastFmSpiceManager().execute(ProcessScoreSpiceRequest.getCachedSpiceRequest
-                    (mHistory , artistDataResponses), new ScoreLoadedListener());
+            if (scoreResponseRequest == null) {
+                scoreResponseRequest = ProcessScoreSpiceRequest.getCachedSpiceRequest(mHistory, artistDataResponses);
+            }
+            getLastFmSpiceManager().execute(scoreResponseRequest, scoreResponseListener);
         }
-    }
+    };
 
-    private class ScoreLoadedListener
-            implements RequestListener<ProcessScoreSpiceRequest.ScoreResponse> {
+    RequestListener<ProcessScoreSpiceRequest.ScoreResponse> scoreResponseListener =
+            new RequestListener<ProcessScoreSpiceRequest.ScoreResponse>() {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
@@ -354,5 +355,5 @@ public class HipSpiceFragment extends Fragment {
                     Toast.LENGTH_LONG).show();
 
         }
-    }
+    };
 }
