@@ -24,6 +24,11 @@ public class LastFmSpiceService extends RetrofitGsonSpiceService {
     }
 
     @Override
+    public int getThreadCount() {
+        return 2;
+    }
+
+    @Override
     protected Converter createConverter() {
         return new GsonConverter(new GsonBuilder()
                 .registerTypeAdapter(User.class, new LastFmDeserializer<User>("user"))
@@ -49,6 +54,6 @@ public class LastFmSpiceService extends RetrofitGsonSpiceService {
                 .setEndpoint(getServerUrl())
                 .setRequestInterceptor(requestInterceptor)
                 .setConverter(getConverter())
-                .setLogLevel(RestAdapter.LogLevel.FULL);
+                .setLogLevel(RestAdapter.LogLevel.BASIC);
     }
 }

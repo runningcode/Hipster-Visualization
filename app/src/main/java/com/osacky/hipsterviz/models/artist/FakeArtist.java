@@ -14,4 +14,12 @@ public class FakeArtist {
     public String getMbid() {
         return mbid;
     }
+
+    public String getIdentifier() {
+        if (mbid == null || mbid.length() == 0) {
+            return text;
+        } else {
+            return mbid;
+        }
+    }
 }

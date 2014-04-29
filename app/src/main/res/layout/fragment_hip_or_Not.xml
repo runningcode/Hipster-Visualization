@@ -15,7 +15,8 @@
         android:id="@+id/hipster_artist_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="30dp"
+        android:layout_margin="20dp"
+        android:textSize="48sp"
         android:gravity="center"
         style="@android:style/TextAppearance.Large"
         />

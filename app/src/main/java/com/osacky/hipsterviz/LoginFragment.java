@@ -1,5 +1,7 @@
 package com.osacky.hipsterviz;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -19,7 +21,12 @@ public class LoginFragment extends BaseSpiceFragment {
         if(username.getText() == null || username.length()==0) {
             Toast.makeText(getActivity(), getString(R.string.invalid_name), Toast.LENGTH_SHORT).show();
         } else {
-            MainActivity_.intent(getActivity()).username(username.getText().toString()).start();
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(getString(R.string.PREF_USERNAME), username.getText().toString());
+            editor.commit();
+
+            MainActivity_.intent(getActivity()).start();
             getActivity().finish();
         }
 

@@ -52,7 +52,7 @@ public class TrackDetailActivity extends ActionBarActivity implements LoadingInt
     }
 
     @Override
-    public void onLoadingProgressUpdate(int progress) {
+    public void onLoadingProgressUpdate(float progress) {
     }
 
     @Override
