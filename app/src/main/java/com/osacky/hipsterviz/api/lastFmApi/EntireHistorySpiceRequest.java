@@ -1,6 +1,7 @@
 package com.osacky.hipsterviz.api.lastFmApi;
 
 import android.util.Log;
+import android.util.SparseArray;
 
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.request.CachedSpiceRequest;
@@ -11,15 +12,18 @@ import com.osacky.hipsterviz.models.track.TrackListTrack;
 import com.osacky.hipsterviz.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
-public class EntireHistorySpiceRequest extends RetrofitSpiceRequest<EntireHistorySpiceRequest.HistoryMap, LastFmApi> {
+public class EntireHistorySpiceRequest extends RetrofitSpiceRequest<EntireHistorySpiceRequest.EntireHistoryResponse,
+        LastFmApi> {
 
     @SuppressWarnings("unused")
     private static final String TAG = "UserHistorySpiceRequest";
 
-    public static class HistoryMap extends HashMap<Long, List<String>> {
+    public static class EntireHistoryResponse {
+        HashSet<String> allArtists = new HashSet<String>();
+        SparseArray<List<String>> historyMap = new SparseArray<List<String>>();
     }
 
     private final String mUsername;
@@ -28,42 +32,45 @@ public class EntireHistorySpiceRequest extends RetrofitSpiceRequest<EntireHistor
     private static final long cacheDuration = DurationInMillis.ALWAYS_RETURNED;
 
     public EntireHistorySpiceRequest(String username) {
-        super(HistoryMap.class, LastFmApi.class);
+        super(EntireHistoryResponse.class, LastFmApi.class);
         mUsername = username;
     }
 
-    public static CachedSpiceRequest<HistoryMap> getCachedSpiceRequest(String username) {
+    public static CachedSpiceRequest<EntireHistoryResponse> getCachedSpiceRequest(String username) {
         EntireHistorySpiceRequest historyPageSpiceRequest = new EntireHistorySpiceRequest(username);
-        return new CachedSpiceRequest<HistoryMap>(historyPageSpiceRequest, username, cacheDuration);
+        return new CachedSpiceRequest<EntireHistoryResponse>(historyPageSpiceRequest, username, cacheDuration);
     }
 
     @Override
-    public HistoryMap loadDataFromNetwork() throws Exception {
-        HistoryMap historyMap = new HistoryMap();
+    public EntireHistoryResponse loadDataFromNetwork() throws Exception {
+        EntireHistoryResponse response = new EntireHistoryResponse();
         while (currentPage < totalPages) {
             TrackHistoryPage historyPage = getService().getRecentTracks(mUsername, currentPage + 1);
             Log.i(TAG, "entire history totalPages " + totalPages + " currentPage " + currentPage);
-            fillMap(historyMap, historyPage);
+            fillMap(response, historyPage);
         }
-        return historyMap;
+        return response;
     }
 
-    private void fillMap(HistoryMap historyMap, TrackHistoryPage historyPage) {
+    private void fillMap(EntireHistoryResponse response, TrackHistoryPage historyPage) throws Exception {
         final Attr attr = historyPage.getAttr();
-        totalPages = attr.getTotalPages();
-        currentPage = attr.getPage();
         final float progress = attr.getProgress();
         publishProgress(progress);
+        totalPages = attr.getTotalPages();
+        currentPage = attr.getPage();
 
+        int key;
+        String identifier;
         for (TrackListTrack track : historyPage.getTrack()) {
-            long key = Utils.roundDays(track.getDateTime()).getMillis();
-            String identifier = track.getArtist().getIdentifier();
-            List<String> identifiers = historyMap.get(key);
+            key = (int) (Utils.roundDays(track.getDateTime()).getMillis()/1000);
+            identifier = track.getArtist().getIdentifier();
+            List<String> identifiers = response.historyMap.get(key);
             if (identifiers == null) {
                 identifiers = new ArrayList<String>();
-                historyMap.put(key, identifiers);
+                response.historyMap.put(key, identifiers);
             }
             identifiers.add(identifier);
+            response.allArtists.add(identifier);
         }
     }
 }

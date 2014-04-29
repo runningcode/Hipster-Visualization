@@ -270,7 +270,7 @@ public class HipSpiceFragment extends Fragment {
     }
 
     private class EntireHistoryRequestListener
-            implements RequestListener<EntireHistorySpiceRequest.HistoryMap>,
+            implements RequestListener<EntireHistorySpiceRequest.EntireHistoryResponse>,
             RequestProgressListener {
 
         @Override
@@ -279,7 +279,7 @@ public class HipSpiceFragment extends Fragment {
         }
 
         @Override
-        public void onRequestSuccess(EntireHistorySpiceRequest.HistoryMap historyMap) {
+        public void onRequestSuccess(EntireHistorySpiceRequest.EntireHistoryResponse historyMap) {
             loadingDone = true;
             loadingInterface.onLoadingFinished();
         }
