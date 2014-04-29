@@ -13,4 +13,12 @@ public class TrackArtist extends FakeArtist {
     public String getUrl() {
         return url;
     }
+
+    @Override
+    public String getIdentifier() {
+        if (name != null && !name.isEmpty()) {
+            return name;
+        }
+        return super.getIdentifier();
+    }
 }

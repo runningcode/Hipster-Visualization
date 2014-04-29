@@ -6,7 +6,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
@@ -24,12 +23,14 @@ import com.osacky.hipsterviz.api.LoadingInterface;
 import com.osacky.hipsterviz.api.lastFmApi.ArtistSpiceRequest;
 import com.osacky.hipsterviz.api.lastFmApi.EntireHistorySpiceRequest;
 import com.osacky.hipsterviz.api.lastFmApi.LastFmSpiceService;
+import com.osacky.hipsterviz.api.lastFmApi.ProcessScoreSpiceRequest;
 import com.osacky.hipsterviz.api.thomasApi.RankArtistsSpicePost;
 import com.osacky.hipsterviz.api.thomasApi.RankSpicePost;
 import com.osacky.hipsterviz.api.thomasApi.RequestArtistsSpiceRequest;
 import com.osacky.hipsterviz.api.thomasApi.ThomasApiService;
 import com.osacky.hipsterviz.models.ArtistDataResponse;
 import com.osacky.hipsterviz.models.artist.RealArtist;
+import com.osacky.hipsterviz.utils.Utils;
 import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterViews;
@@ -75,6 +76,7 @@ public class HipSpiceFragment extends Fragment {
     private String username;
     private boolean loadingDone = false;
     private int totalRated = 0;
+    private EntireHistorySpiceRequest.EntireHistoryResponse mHistory;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -205,8 +207,8 @@ public class HipSpiceFragment extends Fragment {
         @Override
         public void onRequestSuccess(ArtistDataResponse.ArtistList artistDataResponses) {
             loadingInterface.onLoadingFinished();
-            for (ArtistDataResponse artistDataResponse : artistDataResponses) {
-                mArtistIdList.add(artistDataResponse.getArtistId());
+            for (ArtistDataResponse data : artistDataResponses) {
+                mArtistIdList.add(data.getArtistId());
             }
             loadFirstArtist();
         }
@@ -218,14 +220,13 @@ public class HipSpiceFragment extends Fragment {
             /*  what a bad-ass motherfucking regex
              *  this checks if the id is an mbid or an actual artist name
              */
-            if (mArtistIdList.get(0).matches("^([0-9a-f]*-[0-9a-f]*){4}$")) {
-                Log.i(TAG, "matches regex " + mArtistIdList.get(0));
+            String firstArtist = mArtistIdList.get(0);
+            if (Utils.isMbid(firstArtist)) {
                 cachedSpiceRequest = ArtistSpiceRequest.getCachedSpiceRequest(
-                        mArtistIdList.get(0), true);
+                        firstArtist, true);
             } else {
-                Log.i(TAG, "doesn't match regex " + mArtistIdList.get(0));
                 cachedSpiceRequest = ArtistSpiceRequest.getCachedSpiceRequest(
-                        mArtistIdList.get(0), false);
+                        firstArtist, false);
             }
             getLastFmSpiceManager().execute(
                     cachedSpiceRequest,
@@ -252,9 +253,13 @@ public class HipSpiceFragment extends Fragment {
             if (s.equals("ok")) {
                 totalRated++;
                 if (totalRated > 10 && loadingDone) {
+                    if (!mArtistIdList.isEmpty()) {
+                        mArtistIdList.remove(0);
+                    }
                     Toast.makeText(getActivity(), "Done rating!", Toast.LENGTH_SHORT).show();
+                    loadFirstArtist();
                     // TODO we're done!
-                } else if (mArtistIdList.size() >= 1) {
+                } else if (!mArtistIdList.isEmpty()) {
                     mArtistIdList.remove(0);
                     loadFirstArtist();
                 } else {
@@ -288,19 +293,7 @@ public class HipSpiceFragment extends Fragment {
         }
     }
 
-    private class RankArtistsPostRequestListener
-            implements RequestListener<ArtistDataResponse.ArtistList> {
 
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            showToast(spiceException);
-        }
-
-        @Override
-        public void onRequestSuccess(ArtistDataResponse.ArtistList artistDataResponses) {
-            Log.i(TAG, "first artist id is " + artistDataResponses.get(0).getArtistId());
-        }
-    }
 
     private class EntireHistoryRequestListener
             implements RequestListener<EntireHistorySpiceRequest.EntireHistoryResponse>,
@@ -313,12 +306,11 @@ public class HipSpiceFragment extends Fragment {
 
         @Override
         public void onRequestSuccess(EntireHistorySpiceRequest.EntireHistoryResponse historyMap) {
-            loadingDone = true;
             loadingInterface.onLoadingFinished();
+            mHistory = historyMap;
             // HOLY SHIT THIS IS AMAZING
             String artistIds = new Gson().toJson(historyMap.getAllArtists());
 
-            Log.i(TAG, "THE IDS ARE " + artistIds);
             getThomasSpiceManager().execute(
                     RankArtistsSpicePost.getCachedSpiceRequest(artistIds),
                     new RankArtistsPostRequestListener()
@@ -328,6 +320,39 @@ public class HipSpiceFragment extends Fragment {
         @Override
         public void onRequestProgressUpdate(RequestProgress progress) {
             loadingInterface.onLoadingProgressUpdate(progress.getProgress());
+        }
+    }
+
+    private class RankArtistsPostRequestListener
+            implements RequestListener<RankArtistsSpicePost.ArtistLookup> {
+
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            showToast(spiceException);
+        }
+
+        @Override
+        public void onRequestSuccess(RankArtistsSpicePost.ArtistLookup artistDataResponses) {
+            getLastFmSpiceManager().execute(ProcessScoreSpiceRequest.getCachedSpiceRequest
+                    (mHistory , artistDataResponses), new ScoreLoadedListener());
+        }
+    }
+
+    private class ScoreLoadedListener
+            implements RequestListener<ProcessScoreSpiceRequest.ScoreResponse> {
+
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            showToast(spiceException);
+        }
+
+        @Override
+        public void onRequestSuccess(ProcessScoreSpiceRequest.ScoreResponse scoreResponse) {
+            loadingInterface.onLoadingFinished();
+            loadingDone = true;
+            Toast.makeText(getActivity(), "Score is really finally done loaded",
+                    Toast.LENGTH_LONG).show();
+
         }
     }
 }

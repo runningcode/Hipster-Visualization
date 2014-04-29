@@ -14,4 +14,8 @@ public class Utils {
         return new DateTime(t, dt.getZone()).dayOfMonth().roundFloorCopy();
     }
 
+    public static boolean isMbid(String artist) {
+        return artist.matches("^([0-9a-f]*-[0-9a-f]*){4}$");
+    }
+
 }

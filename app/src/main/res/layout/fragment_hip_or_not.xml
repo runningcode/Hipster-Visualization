@@ -11,12 +11,13 @@
               android:fitsSystemWindows="true"
               tools:context="com.osacky.hipsterviz.HipSpiceFragment_">
 
-    <TextView
+    <com.osacky.hipsterviz.utils.FontFitTextView
         android:id="@+id/hipster_artist_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:textSize="48sp"
+        android:textSize="42sp"
+        android:singleLine="true"
         android:gravity="center"
         android:text="Loading..."
         style="@android:style/TextAppearance.Large"
