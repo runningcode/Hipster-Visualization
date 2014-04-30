@@ -10,6 +10,7 @@ import com.osacky.hipsterviz.models.ArtistDataResponse;
 import com.osacky.hipsterviz.models.artist.RealBaseArtist;
 import com.osacky.hipsterviz.utils.Utils;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
@@ -117,7 +118,7 @@ public class ProcessScoreSpiceRequest
         }
     }
 
-    public static class ScoreResponse {
+    public static class ScoreResponse implements Serializable {
         SparseArray<Float> scoreArray = new SparseArray<Float>();
         int totalArtists;
         int totalHipsterArtists;

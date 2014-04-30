@@ -1,5 +1,6 @@
 package com.osacky.hipsterviz;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.widget.LinearLayout;
 
@@ -10,25 +11,27 @@ import com.osacky.hipsterviz.api.lastFmApi.ProcessScoreSpiceRequest;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
 
-/**
- * Created by Jonathan on 4/30/14.
- */
 @EFragment(R.layout.fragment_graph)
 public class GraphFragment extends Fragment {
+
     @ViewById(R.id.graph_container)
     LinearLayout graphContainer;
 
+    @FragmentArg
     ProcessScoreSpiceRequest.ScoreResponse mScoreResponse;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     @AfterViews
     void initGraph() {
         createGraph();
-    }
-
-    public void setmScoreResponse(ProcessScoreSpiceRequest.ScoreResponse scoreResponse){
-        mScoreResponse = scoreResponse;
     }
 
     public void createGraph() {
@@ -38,10 +41,7 @@ public class GraphFragment extends Fragment {
             data[i] = new GraphView.GraphViewData(mScoreResponse.getScoreArray().keyAt(i),
                     ((Number)mScoreResponse.getScoreArray().valueAt(i)).doubleValue());
         }
-        GraphView graphView = new LineGraphView(
-                getActivity() // context
-                , "GraphViewDemo" // heading
-        );
+        GraphView graphView = new LineGraphView(getActivity(), getString(R.string.chart_title));
         graphView.addSeries(new GraphViewSeries(data));
         graphContainer.addView(graphView);
     }

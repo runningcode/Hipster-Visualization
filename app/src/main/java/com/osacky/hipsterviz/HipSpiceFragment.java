@@ -164,12 +164,13 @@ public class HipSpiceFragment extends Fragment {
 
     @OptionsItem(R.id.action_show_score)
     void handleShowScore() {
-        GraphFragment newFragment = new GraphFragment_();
+        GraphFragment newFragment = GraphFragment_.builder()
+                .mScoreResponse(mScoreResponse)
+                .build();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.container, newFragment);
         transaction.addToBackStack(null);
         transaction.commit();
-        newFragment.setmScoreResponse(mScoreResponse);
     }
 
     private void handleTouch(MotionEvent event, SpringyButton button, String classification) {

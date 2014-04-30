@@ -19,5 +19,6 @@
     <string name="too_short">Please input at least one character</string>
     <string name="action_show_score">Show Score</string>
     <string name="welcome_string">Welcome %1$s!</string>
+    <string name="chart_title">Hipster score over time</string>
 
 </resources>
