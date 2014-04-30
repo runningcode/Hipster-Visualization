@@ -25,13 +25,14 @@
         style="@android:style/TextAppearance.Large"
         />
 
-    <ImageView
+    <com.osacky.hipsterviz.views.SpringyImageView
         android:id="@+id/hipster_artist_image"
         android:layout_weight="3"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="center_horizontal"
-        android:contentDescription="@string/artist_image_desc"/>
+        android:contentDescription="@string/artist_image_desc"
+        app:startY="-300dp"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

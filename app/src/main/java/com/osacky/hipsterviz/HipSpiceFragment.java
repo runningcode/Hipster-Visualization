@@ -2,7 +2,6 @@ package com.osacky.hipsterviz;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -10,14 +9,9 @@ import android.support.v4.app.Fragment;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.rebound.SimpleSpringListener;
-import com.facebook.rebound.Spring;
-import com.facebook.rebound.SpringUtil;
-import com.facebook.rebound.ui.Util;
 import com.google.gson.Gson;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -40,6 +34,7 @@ import com.osacky.hipsterviz.models.artist.RealBaseArtist;
 import com.osacky.hipsterviz.utils.Utils;
 import com.osacky.hipsterviz.views.SpringyButton;
 import com.osacky.hipsterviz.views.SpringyFontFitTextView;
+import com.osacky.hipsterviz.views.SpringyImageView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -59,13 +54,14 @@ public class HipSpiceFragment extends Fragment {
 
     @SuppressWarnings("unused")
     private static final String TAG = "HipSpiceFragment";
+    private static final int ARTISTS_LOAD_LIMIT = 20;
     protected LoadingInterface loadingInterface;
 
     @ViewById(R.id.hipster_artist_name)
     SpringyFontFitTextView artistName;
 
     @ViewById(R.id.hipster_artist_image)
-    ImageView imageView;
+    SpringyImageView imageView;
 
     @ViewById(R.id.hipster_button_yes)
     SpringyButton yes;
@@ -90,27 +86,8 @@ public class HipSpiceFragment extends Fragment {
     private CachedSpiceRequest<EntireHistorySpiceRequest.EntireHistoryResponse>
             entireHistoryRequest;
     private CachedSpiceRequest<ArtistDataResponse.ArtistList> artistListRequest =
-            RequestArtistsSpiceRequest.getCachedSpiceRequest(20);
+            RequestArtistsSpiceRequest.getCachedSpiceRequest(ARTISTS_LOAD_LIMIT);
     private CachedSpiceRequest<ProcessScoreSpiceRequest.ScoreResponse> scoreResponseRequest;
-
-    private Spring imageSpring = Utils.springSystem.createSpring()
-            .setSpringConfig(Utils.ORIGAMI_SPRING_CONFIG)
-            .addListener(new SimpleSpringListener() {
-                @Override
-                public void onSpringUpdate(Spring spring) {
-                    Resources resources = getResources();
-                    double value = imageSpring.getCurrentValue();
-
-                    float selectedTitleScale = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1, .33,
-                            1);
-                    imageView.setScaleX(selectedTitleScale);
-                    imageView.setScaleY(selectedTitleScale);
-
-                    float titleTranslateY = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1,
-                            Util.dpToPx(-350f, resources), 0);
-                    imageView.setTranslationY(titleTranslateY);
-                }
-            });
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -208,7 +185,7 @@ public class HipSpiceFragment extends Fragment {
 
     private void rankArtist(String classification) {
         setSpringValues(0);
-        imageSpring.setEndValue(0);
+        imageView.setEndValue(0);
         if (!mArtistIdList.isEmpty()) {
             loadingInterface.onLoadingStarted();
             getThomasSpiceManager().execute(
@@ -349,12 +326,12 @@ public class HipSpiceFragment extends Fragment {
                     .into(imageView, new Callback() {
                         @Override
                         public void onSuccess() {
-                            imageSpring.setEndValue(1);
+                            imageView.setEndValue(1);
                         }
 
                         @Override
                         public void onError() {
-                            imageSpring.setEndValue(1);
+                            imageView.setEndValue(1);
                         }
                     });
         }
