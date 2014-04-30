@@ -94,7 +94,9 @@ public class HipSpiceFragment extends Fragment {
     private CachedSpiceRequest<ProcessScoreSpiceRequest.ScoreResponse> scoreResponseRequest;
 
     private static final SpringConfig ORIGAMI_SPRING_CONFIG = SpringConfig
-            .fromOrigamiTensionAndFriction(40, 7);
+            .fromOrigamiTensionAndFriction(40, 5);
+    private static final SpringConfig BUTTON_SPRING_CONFIG = SpringConfig
+            .fromOrigamiTensionAndFriction(140, 8);
     private SpringSystem springSystem = SpringSystem.create();
     private Spring titleSpring = springSystem.createSpring()
             .setSpringConfig(ORIGAMI_SPRING_CONFIG)
@@ -104,7 +106,7 @@ public class HipSpiceFragment extends Fragment {
                     renderTitle();
                 }
             });
-    private Spring noButtonSpring = springSystem.createSpring()
+    private Spring noAnimSpring = springSystem.createSpring()
             .setSpringConfig(ORIGAMI_SPRING_CONFIG)
             .addListener(new SimpleSpringListener() {
                 @Override
@@ -113,14 +115,14 @@ public class HipSpiceFragment extends Fragment {
                 }
             });
     private Spring noTouchSpring = springSystem.createSpring()
-            .setSpringConfig(ORIGAMI_SPRING_CONFIG)
+            .setSpringConfig(BUTTON_SPRING_CONFIG)
             .addListener(new SimpleSpringListener() {
                 @Override
                 public void onSpringUpdate(Spring spring) {
                     shrinkView(no, spring);
                 }
             });
-    private Spring yesButtonSpring = springSystem.createSpring()
+    private Spring yesAnimSpring = springSystem.createSpring()
             .setSpringConfig(ORIGAMI_SPRING_CONFIG)
             .addListener(new SimpleSpringListener() {
                 @Override
@@ -129,14 +131,14 @@ public class HipSpiceFragment extends Fragment {
                 }
             });
     private Spring yesTouchSpring = springSystem.createSpring()
-            .setSpringConfig(ORIGAMI_SPRING_CONFIG)
+            .setSpringConfig(BUTTON_SPRING_CONFIG)
             .addListener(new SimpleSpringListener() {
                 @Override
                 public void onSpringUpdate(Spring spring) {
                     shrinkView(yes, spring);
                 }
             });
-    private Spring dunnoButtonSpring = springSystem.createSpring()
+    private Spring dunnoMoveSpring = springSystem.createSpring()
             .setSpringConfig(ORIGAMI_SPRING_CONFIG)
             .addListener(new SimpleSpringListener() {
                 @Override
@@ -145,7 +147,7 @@ public class HipSpiceFragment extends Fragment {
                 }
             });
     private Spring dunnoTouchSpring = springSystem.createSpring()
-            .setSpringConfig(ORIGAMI_SPRING_CONFIG)
+            .setSpringConfig(BUTTON_SPRING_CONFIG)
             .addListener(new SimpleSpringListener() {
                 @Override
                 public void onSpringUpdate(Spring spring) {
@@ -226,37 +228,42 @@ public class HipSpiceFragment extends Fragment {
 
     @Touch(R.id.hipster_button_yes)
     void onYesTouched(MotionEvent event) {
-        handleTouch(event, yesTouchSpring);
+        handleTouch(event, yesTouchSpring, "hipster");
     }
 
     @Touch(R.id.hipster_button_no)
     void onNoTouched(MotionEvent event) {
-        handleTouch(event, noTouchSpring);
+        handleTouch(event, noTouchSpring, "nothipster");
     }
 
     @Touch(R.id.hipster_button_dont_know)
     void onDunnoTouched(MotionEvent event) {
-        handleTouch(event, dunnoTouchSpring);
+        handleTouch(event, dunnoTouchSpring, "unknown");
     }
 
-    private void handleTouch(MotionEvent event, Spring s) {
+    private void handleTouch(MotionEvent event, Spring s, String classification) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 s.setEndValue(1);
                 break;
+            // this doesn't seem to work
+            case MotionEvent.ACTION_OUTSIDE:
             case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_HOVER_EXIT:
+                s.setEndValue(0);
+                break;
             case MotionEvent.ACTION_UP:
                 s.setEndValue(0);
-                rankArtist("hipster");
+                rankArtist(classification);
                 break;
         }
     }
 
     private void rankArtist(String classification) {
         titleSpring.setEndValue(0);
-        yesButtonSpring.setEndValue(0);
-        noButtonSpring.setEndValue(0);
-        dunnoButtonSpring.setEndValue(0);
+        yesAnimSpring.setEndValue(0);
+        noAnimSpring.setEndValue(0);
+        dunnoMoveSpring.setEndValue(0);
         imageSpring.setEndValue(0);
         if (!mArtistIdList.isEmpty()) {
             loadingInterface.onLoadingStarted();
@@ -409,9 +416,9 @@ public class HipSpiceFragment extends Fragment {
             yes.setVisibility(View.VISIBLE);
             dunno.setVisibility(View.VISIBLE);
             titleSpring.setEndValue(1);
-            noButtonSpring.setEndValue(1);
-            yesButtonSpring.setEndValue(1);
-            dunnoButtonSpring.setEndValue(1);
+            noAnimSpring.setEndValue(1);
+            yesAnimSpring.setEndValue(1);
+            dunnoMoveSpring.setEndValue(1);
             mPicasso.load(realArtist.getImage(getActivity()))
                     .centerCrop()
                     .resize(imageSize, imageSize)
