@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
@@ -43,13 +44,16 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.Touch;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * this is a god class and should be refactored!
+ */
 @EFragment(R.layout.fragment_hip_or_not)
 public class HipSpiceFragment extends Fragment {
 
@@ -105,7 +109,15 @@ public class HipSpiceFragment extends Fragment {
             .addListener(new SimpleSpringListener() {
                 @Override
                 public void onSpringUpdate(Spring spring) {
-                    renderButton(no, noButtonSpring);
+                    renderButton(no, spring, -100f, 0);
+                }
+            });
+    private Spring noTouchSpring = springSystem.createSpring()
+            .setSpringConfig(ORIGAMI_SPRING_CONFIG)
+            .addListener(new SimpleSpringListener() {
+                @Override
+                public void onSpringUpdate(Spring spring) {
+                    shrinkView(no, spring);
                 }
             });
     private Spring yesButtonSpring = springSystem.createSpring()
@@ -113,16 +125,31 @@ public class HipSpiceFragment extends Fragment {
             .addListener(new SimpleSpringListener() {
                 @Override
                 public void onSpringUpdate(Spring spring) {
-                    renderButton(yes, yesButtonSpring);
+                    renderButton(yes, spring, 100f, 0);
                 }
             });
-
+    private Spring yesTouchSpring = springSystem.createSpring()
+            .setSpringConfig(ORIGAMI_SPRING_CONFIG)
+            .addListener(new SimpleSpringListener() {
+                @Override
+                public void onSpringUpdate(Spring spring) {
+                    shrinkView(yes, spring);
+                }
+            });
     private Spring dunnoButtonSpring = springSystem.createSpring()
             .setSpringConfig(ORIGAMI_SPRING_CONFIG)
             .addListener(new SimpleSpringListener() {
                 @Override
                 public void onSpringUpdate(Spring spring) {
-                    renderButton(dunno, dunnoButtonSpring);
+                    renderButton(dunno, spring, 0, 200f);
+                }
+            });
+    private Spring dunnoTouchSpring = springSystem.createSpring()
+            .setSpringConfig(ORIGAMI_SPRING_CONFIG)
+            .addListener(new SimpleSpringListener() {
+                @Override
+                public void onSpringUpdate(Spring spring) {
+                    shrinkView(dunno, spring);
                 }
             });
     private Spring imageSpring = springSystem.createSpring()
@@ -133,6 +160,13 @@ public class HipSpiceFragment extends Fragment {
                     renderImage();
                 }
             });
+
+    private void shrinkView(View view, Spring spring) {
+        float value = (float) spring.getCurrentValue();
+        float scale = 1f - (value * 0.2f);
+        view.setScaleX(scale);
+        view.setScaleY(scale);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -190,19 +224,32 @@ public class HipSpiceFragment extends Fragment {
 
     }
 
-    @Click(R.id.hipster_button_yes)
-    void yesClicked() {
-        rankArtist("hipster");
+    @Touch(R.id.hipster_button_yes)
+    void onYesTouched(MotionEvent event) {
+        handleTouch(event, yesTouchSpring);
     }
 
-    @Click(R.id.hipster_button_no)
-    void noClicked() {
-        rankArtist("nothipster");
+    @Touch(R.id.hipster_button_no)
+    void onNoTouched(MotionEvent event) {
+        handleTouch(event, noTouchSpring);
     }
 
-    @Click(R.id.hipster_button_dont_know)
-    void dunnoClicked() {
-        rankArtist("unknown");
+    @Touch(R.id.hipster_button_dont_know)
+    void onDunnoTouched(MotionEvent event) {
+        handleTouch(event, dunnoTouchSpring);
+    }
+
+    private void handleTouch(MotionEvent event, Spring s) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                s.setEndValue(1);
+                break;
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                s.setEndValue(0);
+                rankArtist("hipster");
+                break;
+        }
     }
 
     private void rankArtist(String classification) {
@@ -370,6 +417,7 @@ public class HipSpiceFragment extends Fragment {
                     .resize(imageSize, imageSize)
                     .transform(roundedTransformation)
                     .noFade()
+                    .error(R.drawable.ic_questionmark)
                     .into(imageView, new Callback() {
                         @Override
                         public void onSuccess() {
@@ -388,34 +436,29 @@ public class HipSpiceFragment extends Fragment {
         Resources resources = getResources();
         double value = titleSpring.getCurrentValue();
 
-        float selectedTitleScale = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1, .33,
+        float selectedTitleScale = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1, 0,
                 1);
-        selectedTitleScale = Math.max(selectedTitleScale, 0);
         artistName.setScaleX(selectedTitleScale);
         artistName.setScaleY(selectedTitleScale);
 
-        float titleTranslateX = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1,
-                Util.dpToPx(-250.667f, resources), 0);
         float titleTranslateY = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1,
-                Util.dpToPx(-146.667f, resources), 0);
-        artistName.setTranslationX(titleTranslateX);
+                Util.dpToPx(-150f, resources), 0);
         artistName.setTranslationY(titleTranslateY);
     }
 
-    void renderButton(View v, Spring s) {
+    void renderButton(View v, Spring s, float xInitial, float yInitial) {
         Resources resources = getResources();
         double value = s.getCurrentValue();
 
-        float selectedTitleScale = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1, .33,
+        float selectedTitleScale = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1, 0,
                 1);
-        selectedTitleScale = Math.max(selectedTitleScale, 0);
         v.setScaleX(selectedTitleScale);
         v.setScaleY(selectedTitleScale);
 
         float titleTranslateX = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1,
-                Util.dpToPx(-206.667f, resources), 0);
+                Util.dpToPx(xInitial, resources), 0);
         float titleTranslateY = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1,
-                Util.dpToPx(46.667f, resources), 0);
+                Util.dpToPx(yInitial, resources), 0);
         v.setTranslationX(titleTranslateX);
         v.setTranslationY(titleTranslateY);
     }
@@ -426,15 +469,11 @@ public class HipSpiceFragment extends Fragment {
 
         float selectedTitleScale = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1, .33,
                 1);
-        selectedTitleScale = Math.max(selectedTitleScale, 0);
         imageView.setScaleX(selectedTitleScale);
         imageView.setScaleY(selectedTitleScale);
 
-        float titleTranslateX = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1,
-                Util.dpToPx(-206.667f, resources), 0);
         float titleTranslateY = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1,
-                Util.dpToPx(46.667f, resources), 0);
-        imageView.setTranslationX(titleTranslateX);
+                Util.dpToPx(-350f, resources), 0);
         imageView.setTranslationY(titleTranslateY);
     }
 
