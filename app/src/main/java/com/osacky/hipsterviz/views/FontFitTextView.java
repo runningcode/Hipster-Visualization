@@ -1,4 +1,4 @@
-package com.osacky.hipsterviz.utils;
+package com.osacky.hipsterviz.views;
 
 import android.content.Context;
 import android.graphics.Paint;

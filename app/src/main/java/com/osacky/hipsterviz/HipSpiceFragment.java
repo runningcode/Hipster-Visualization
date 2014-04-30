@@ -37,8 +37,9 @@ import com.osacky.hipsterviz.api.thomasApi.RequestArtistsSpiceRequest;
 import com.osacky.hipsterviz.api.thomasApi.ThomasApiService;
 import com.osacky.hipsterviz.models.ArtistDataResponse;
 import com.osacky.hipsterviz.models.artist.RealBaseArtist;
-import com.osacky.hipsterviz.utils.SpringyFontFitTextView;
 import com.osacky.hipsterviz.utils.Utils;
+import com.osacky.hipsterviz.views.SpringyButton;
+import com.osacky.hipsterviz.views.SpringyFontFitTextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -52,9 +53,6 @@ import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * this is a god class and should be refactored!
- */
 @EFragment(R.layout.fragment_hip_or_not)
 @OptionsMenu(R.menu.hip_menu)
 public class HipSpiceFragment extends Fragment {
@@ -261,7 +259,7 @@ public class HipSpiceFragment extends Fragment {
     private void showToast(SpiceException spiceException) {
         loadingInterface.onLoadingFinished();
         spiceException.printStackTrace();
-        Toast.makeText(getActivity(), spiceException.getMessage(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), spiceException.getCause().getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     PendingRequestListener<ArtistDataResponse.ArtistList> artistListListener =
@@ -299,9 +297,9 @@ public class HipSpiceFragment extends Fragment {
                 public void onRequestSuccess(ProcessScoreSpiceRequest.ScoreResponse scoreResponse) {
                     loadingInterface.onLoadingFinished();
                     loadingDone = true;
-                    Toast.makeText(getActivity(), "Score is really finally done loaded",
-                            Toast.LENGTH_LONG).show();
-
+                    if (totalRated > 10) {
+                        setHasOptionsMenu(true);
+                    }
                 }
 
                 @Override
@@ -346,6 +344,7 @@ public class HipSpiceFragment extends Fragment {
                     .resize(imageSize, imageSize)
                     .transform(roundedTransformation)
                     .noFade()
+                    .skipMemoryCache()
                     .error(R.drawable.ic_questionmark)
                     .into(imageView, new Callback() {
                         @Override

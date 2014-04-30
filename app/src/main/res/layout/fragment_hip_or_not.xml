@@ -13,7 +13,7 @@
               android:fitsSystemWindows="true"
               tools:context="com.osacky.hipsterviz.HipSpiceFragment_">
 
-    <com.osacky.hipsterviz.utils.SpringyFontFitTextView
+    <com.osacky.hipsterviz.views.SpringyFontFitTextView
         android:visibility="invisible"
         android:id="@+id/hipster_artist_name"
         android:layout_width="match_parent"
@@ -41,7 +41,7 @@
         android:layout_marginLeft="10dp"
         >
 
-        <com.osacky.hipsterviz.SpringyButton_
+        <com.osacky.hipsterviz.views.SpringyButton_
             android:id="@+id/hipster_button_no"
             android:layout_width="100dp"
             android:layout_height="100dp"
@@ -50,7 +50,7 @@
             app:text="@string/no_text"
             />
 
-        <com.osacky.hipsterviz.SpringyButton_
+        <com.osacky.hipsterviz.views.SpringyButton_
             android:id="@+id/hipster_button_yes"
             android:layout_width="100dp"
             android:layout_height="100dp"
@@ -61,7 +61,7 @@
 
     </RelativeLayout>
 
-    <com.osacky.hipsterviz.SpringyButton_
+    <com.osacky.hipsterviz.views.SpringyButton_
         android:id="@+id/hipster_button_dont_know"
         android:layout_width="100dp"
         android:layout_height="100dp"

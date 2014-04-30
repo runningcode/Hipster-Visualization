@@ -1,4 +1,4 @@
-package com.osacky.hipsterviz;
+package com.osacky.hipsterviz.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.facebook.rebound.Spring;
 import com.facebook.rebound.SpringListener;
 import com.facebook.rebound.SpringUtil;
+import com.osacky.hipsterviz.R;
 import com.osacky.hipsterviz.utils.Utils;
 
 import org.androidannotations.annotations.EViewGroup;

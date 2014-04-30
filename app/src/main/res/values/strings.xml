@@ -16,7 +16,8 @@
     <string name="dunno_text">Never heard it</string>
 
     <string name="user_name">last.fm username</string>
-    <string name="invalid_name">Please input a valid last.fm username</string>
+    <string name="too_short">Please input at least one character</string>
     <string name="action_show_score">Show Score</string>
+    <string name="welcome_string">Welcome %1$s!</string>
 
 </resources>

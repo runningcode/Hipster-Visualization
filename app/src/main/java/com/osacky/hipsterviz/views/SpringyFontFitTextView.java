@@ -1,4 +1,4 @@
-package com.osacky.hipsterviz.utils;
+package com.osacky.hipsterviz.views;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -8,6 +8,7 @@ import com.facebook.rebound.Spring;
 import com.facebook.rebound.SpringListener;
 import com.facebook.rebound.SpringUtil;
 import com.facebook.rebound.ui.Util;
+import com.osacky.hipsterviz.utils.Utils;
 
 public class SpringyFontFitTextView extends FontFitTextView implements SpringListener {
 
