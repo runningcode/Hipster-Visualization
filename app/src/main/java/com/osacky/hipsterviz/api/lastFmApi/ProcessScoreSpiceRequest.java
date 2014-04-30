@@ -1,6 +1,5 @@
 package com.osacky.hipsterviz.api.lastFmApi;
 
-import android.util.Log;
 import android.util.SparseArray;
 
 import com.octo.android.robospice.persistence.DurationInMillis;
@@ -91,9 +90,8 @@ public class ProcessScoreSpiceRequest
     private int classifyArtist(RealBaseArtist realArtist) throws Exception {
         String identifier = realArtist.getIdentifier();
         if (!mArtistResponse.containsKey(identifier)) {
-            Log.i(TAG, "missing key " + identifier);
-            // this is a bug
-            return UNKNOWN;
+            // this should never happen
+            throw new Exception("Missing key");
         }
         final ArtistDataResponse artistData = mArtistResponse.get(identifier);
         final String tags = realArtist.getTags();

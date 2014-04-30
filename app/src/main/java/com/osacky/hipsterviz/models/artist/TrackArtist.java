@@ -16,7 +16,9 @@ public class TrackArtist extends FakeArtist {
 
     @Override
     public String getIdentifier() {
-        if (name != null && !name.isEmpty()) {
+        if (mbid != null && !(mbid.length() == 0)) {
+            return mbid;
+        } else if (name != null && !(name.length() == 0)) {
             return name;
         }
         return super.getIdentifier();
