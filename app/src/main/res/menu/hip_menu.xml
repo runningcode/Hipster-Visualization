@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.osacky.hipsterviz.HipSpiceFragment_">
+
+    <item
+        android:id="@+id/action_show_score"
+        android:title="@string/action_show_score"
+        app:showAsAction="always"/>
+</menu>

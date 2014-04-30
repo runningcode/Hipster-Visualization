@@ -44,6 +44,8 @@ import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.Touch;
 import org.androidannotations.annotations.ViewById;
 
@@ -54,6 +56,7 @@ import java.util.List;
  * this is a god class and should be refactored!
  */
 @EFragment(R.layout.fragment_hip_or_not)
+@OptionsMenu(R.menu.hip_menu)
 public class HipSpiceFragment extends Fragment {
 
     @SuppressWarnings("unused")
@@ -89,7 +92,7 @@ public class HipSpiceFragment extends Fragment {
     private CachedSpiceRequest<EntireHistorySpiceRequest.EntireHistoryResponse>
             entireHistoryRequest;
     private CachedSpiceRequest<ArtistDataResponse.ArtistList> artistListRequest =
-            RequestArtistsSpiceRequest.getCachedSpiceRequest(100);
+            RequestArtistsSpiceRequest.getCachedSpiceRequest(20);
     private CachedSpiceRequest<ProcessScoreSpiceRequest.ScoreResponse> scoreResponseRequest;
 
     private Spring imageSpring = Utils.springSystem.createSpring()
@@ -97,7 +100,17 @@ public class HipSpiceFragment extends Fragment {
             .addListener(new SimpleSpringListener() {
                 @Override
                 public void onSpringUpdate(Spring spring) {
-                    renderImage();
+                    Resources resources = getResources();
+                    double value = imageSpring.getCurrentValue();
+
+                    float selectedTitleScale = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1, .33,
+                            1);
+                    imageView.setScaleX(selectedTitleScale);
+                    imageView.setScaleY(selectedTitleScale);
+
+                    float titleTranslateY = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1,
+                            Util.dpToPx(-350f, resources), 0);
+                    imageView.setTranslationY(titleTranslateY);
                 }
             });
 
@@ -151,6 +164,9 @@ public class HipSpiceFragment extends Fragment {
         yesText.setTypeface(normalFace);
         noText.setTypeface(normalFace);
         dunnoText.setTypeface(normalFace);
+        if (!loadingDone) {
+            setHasOptionsMenu(false);
+        }
 
     }
 
@@ -167,6 +183,11 @@ public class HipSpiceFragment extends Fragment {
     @Touch(R.id.hipster_button_dont_know)
     void onDunnoTouched(MotionEvent event) {
         handleTouch(event, dunno, "unknown");
+    }
+
+    @OptionsItem(R.id.action_show_score)
+    void handleShowScore() {
+        //TODO show the user's score
     }
 
     private void handleTouch(MotionEvent event, SpringyButton button, String classification) {
@@ -236,24 +257,6 @@ public class HipSpiceFragment extends Fragment {
         return lastFmSpiceManager;
     }
 
-    private void loadFirstArtist() {
-        if (!mArtistIdList.isEmpty()) {
-            CachedSpiceRequest<RealBaseArtist> cachedSpiceRequest;
-            String firstArtist = mArtistIdList.get(0);
-            if (Utils.isMbid(firstArtist)) {
-                cachedSpiceRequest = ArtistSpiceRequest.getCachedSpiceRequest(
-                        firstArtist, true);
-            } else {
-                cachedSpiceRequest = ArtistSpiceRequest.getCachedSpiceRequest(
-                        firstArtist, false);
-            }
-            getLastFmSpiceManager().execute(
-                    cachedSpiceRequest,
-                    artistRequestListener
-            );
-            artistName.setEndValue(0);
-        }
-    }
 
     private void showToast(SpiceException spiceException) {
         loadingInterface.onLoadingFinished();
@@ -365,20 +368,6 @@ public class HipSpiceFragment extends Fragment {
         dunno.setAnimValue(value);
     }
 
-    private void renderImage() {
-        Resources resources = getResources();
-        double value = imageSpring.getCurrentValue();
-
-        float selectedTitleScale = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1, .33,
-                1);
-        imageView.setScaleX(selectedTitleScale);
-        imageView.setScaleY(selectedTitleScale);
-
-        float titleTranslateY = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1,
-                Util.dpToPx(-350f, resources), 0);
-        imageView.setTranslationY(titleTranslateY);
-    }
-
     private class RankArtistRequestListener implements RequestListener<String> {
 
         @Override
@@ -388,27 +377,37 @@ public class HipSpiceFragment extends Fragment {
 
         @Override
         public void onRequestSuccess(String s) {
+            loadingInterface.onLoadingFinished();
             if (s.equals("ok")) {
                 totalRated++;
+                // successfully rated artist so remove it from the list.
+                mArtistIdList.remove(0);
                 if (totalRated > 10 && loadingDone) {
-                    if (!mArtistIdList.isEmpty()) {
-                        mArtistIdList.remove(0);
-                    }
-                    Toast.makeText(getActivity(), "Done rating!", Toast.LENGTH_SHORT).show();
-                    loadFirstArtist();
-                    // TODO we're done!
-                } else if (!mArtistIdList.isEmpty()) {
-                    mArtistIdList.remove(0);
-                    loadFirstArtist();
-                } else {
-                    Toast.makeText(getActivity(), "Need more people to rate!", Toast.LENGTH_SHORT).show();
-                    //TODO load more people to rate
+                    setHasOptionsMenu(true);
                 }
-            } else {
-                Toast.makeText(getActivity(), "That was a weird error", Toast.LENGTH_SHORT).show();
-                //TODO retry request?
             }
-            loadingInterface.onLoadingFinished();
+            loadFirstArtist();
+        }
+    }
+
+    private void loadFirstArtist() {
+        if (!mArtistIdList.isEmpty()) {
+            CachedSpiceRequest<RealBaseArtist> cachedSpiceRequest;
+            String firstArtist = mArtistIdList.get(0);
+            if (Utils.isMbid(firstArtist)) {
+                cachedSpiceRequest = ArtistSpiceRequest.getCachedSpiceRequest(
+                        firstArtist, true);
+            } else {
+                cachedSpiceRequest = ArtistSpiceRequest.getCachedSpiceRequest(
+                        firstArtist, false);
+            }
+            getLastFmSpiceManager().execute(
+                    cachedSpiceRequest,
+                    artistRequestListener
+            );
+            artistName.setEndValue(0);
+        } else {
+            getThomasSpiceManager().execute(artistListRequest, artistListListener);
         }
     }
 

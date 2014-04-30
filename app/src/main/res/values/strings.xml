@@ -17,5 +17,6 @@
 
     <string name="user_name">last.fm username</string>
     <string name="invalid_name">Please input a valid last.fm username</string>
+    <string name="action_show_score">Show Score</string>
 
 </resources>
