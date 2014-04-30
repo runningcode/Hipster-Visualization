@@ -12,6 +12,7 @@
               tools:context="com.osacky.hipsterviz.HipSpiceFragment_">
 
     <com.osacky.hipsterviz.utils.FontFitTextView
+        android:visibility="invisible"
         android:id="@+id/hipster_artist_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,7 +20,6 @@
         android:textSize="42sp"
         android:singleLine="true"
         android:gravity="center"
-        android:text="Loading..."
         style="@android:style/TextAppearance.Large"
         />
 

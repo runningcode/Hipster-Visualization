@@ -2,6 +2,7 @@ package com.osacky.hipsterviz;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -12,6 +13,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.rebound.SimpleSpringListener;
+import com.facebook.rebound.Spring;
+import com.facebook.rebound.SpringConfig;
+import com.facebook.rebound.SpringSystem;
+import com.facebook.rebound.SpringUtil;
+import com.facebook.rebound.ui.Util;
 import com.google.gson.Gson;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -32,6 +39,7 @@ import com.osacky.hipsterviz.api.thomasApi.ThomasApiService;
 import com.osacky.hipsterviz.models.ArtistDataResponse;
 import com.osacky.hipsterviz.models.artist.RealBaseArtist;
 import com.osacky.hipsterviz.utils.Utils;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterViews;
@@ -48,109 +56,83 @@ public class HipSpiceFragment extends Fragment {
     @SuppressWarnings("unused")
     private static final String TAG = "HipSpiceFragment";
     protected LoadingInterface loadingInterface;
+
     @ViewById(R.id.hipster_artist_name)
     TextView artistName;
+
     @ViewById(R.id.hipster_artist_image)
     ImageView imageView;
-    RequestListener<RealBaseArtist> artistRequestListener = new RequestListener<RealBaseArtist>() {
 
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            showToast(spiceException);
-        }
-
-        @Override
-        public void onRequestSuccess(RealBaseArtist realArtist) {
-            loadingInterface.onLoadingFinished();
-            artistName.setText(realArtist.getName());
-            mPicasso.load(realArtist.getImage(getActivity()))
-                    .centerCrop()
-                    .resize(imageSize, imageSize)
-                    .transform(roundedTransformation)
-                    .into(imageView);
-        }
-    };
     @ViewById(R.id.hipster_button_yes)
     View yes;
+
     @ViewById(R.id.hipster_button_no)
     View no;
+
     @ViewById(R.id.hipster_button_dont_know)
     View dunno;
+
     private Picasso mPicasso;
     private RoundedTransformation roundedTransformation;
     private List<String> mArtistIdList = new ArrayList<String>();
     private SpiceManager thomasSpiceManager = new SpiceManager(ThomasApiService.class);
     private SpiceManager lastFmSpiceManager = new SpiceManager(LastFmSpiceService.class);
+
     private int imageSize;
     private boolean loadingDone = false;
-    PendingRequestListener<ProcessScoreSpiceRequest.ScoreResponse> scoreResponseListener =
-            new PendingRequestListener<ProcessScoreSpiceRequest.ScoreResponse>() {
-
-                @Override
-                public void onRequestFailure(SpiceException spiceException) {
-                    showToast(spiceException);
-                }
-
-                @Override
-                public void onRequestSuccess(ProcessScoreSpiceRequest.ScoreResponse scoreResponse) {
-                    loadingInterface.onLoadingFinished();
-                    loadingDone = true;
-                    Toast.makeText(getActivity(), "Score is really finally done loaded",
-                            Toast.LENGTH_LONG).show();
-
-                }
-
-                @Override
-                public void onRequestNotFound() {
-
-                }
-            };
     private int totalRated = 0;
+
     private EntireHistorySpiceRequest.EntireHistoryResponse mHistory;
     private CachedSpiceRequest<EntireHistorySpiceRequest.EntireHistoryResponse>
             entireHistoryRequest;
     private CachedSpiceRequest<ArtistDataResponse.ArtistList> artistListRequest =
             RequestArtistsSpiceRequest.getCachedSpiceRequest(100);
-    PendingRequestListener<ArtistDataResponse.ArtistList> artistListListener =
-            new PendingRequestListener<ArtistDataResponse.ArtistList>() {
-
-                @Override
-                public void onRequestFailure(SpiceException spiceException) {
-                    showToast(spiceException);
-                }
-
-                @Override
-                public void onRequestSuccess(ArtistDataResponse.ArtistList artistDataResponses) {
-                    loadingInterface.onLoadingFinished();
-                    for (ArtistDataResponse data : artistDataResponses) {
-                        mArtistIdList.add(data.getArtistId());
-                    }
-                    loadFirstArtist();
-                }
-
-                @Override
-                public void onRequestNotFound() {
-                    getThomasSpiceManager().execute(artistListRequest, this);
-                }
-            };
     private CachedSpiceRequest<ProcessScoreSpiceRequest.ScoreResponse> scoreResponseRequest;
-    RequestListener<RankArtistsSpicePost.ArtistLookup> artistLookupListener =
-            new RequestListener<RankArtistsSpicePost.ArtistLookup>() {
 
+    private static final SpringConfig ORIGAMI_SPRING_CONFIG = SpringConfig
+            .fromOrigamiTensionAndFriction(40, 7);
+    private SpringSystem springSystem = SpringSystem.create();
+    private Spring titleSpring = springSystem.createSpring()
+            .setSpringConfig(ORIGAMI_SPRING_CONFIG)
+            .addListener(new SimpleSpringListener() {
                 @Override
-                public void onRequestFailure(SpiceException spiceException) {
-                    showToast(spiceException);
+                public void onSpringUpdate(Spring spring) {
+                    renderTitle();
                 }
+            });
+    private Spring noButtonSpring = springSystem.createSpring()
+            .setSpringConfig(ORIGAMI_SPRING_CONFIG)
+            .addListener(new SimpleSpringListener() {
+                @Override
+                public void onSpringUpdate(Spring spring) {
+                    renderButton(no, noButtonSpring);
+                }
+            });
+    private Spring yesButtonSpring = springSystem.createSpring()
+            .setSpringConfig(ORIGAMI_SPRING_CONFIG)
+            .addListener(new SimpleSpringListener() {
+                @Override
+                public void onSpringUpdate(Spring spring) {
+                    renderButton(yes, yesButtonSpring);
+                }
+            });
 
+    private Spring dunnoButtonSpring = springSystem.createSpring()
+            .setSpringConfig(ORIGAMI_SPRING_CONFIG)
+            .addListener(new SimpleSpringListener() {
                 @Override
-                public void onRequestSuccess(RankArtistsSpicePost.ArtistLookup artistDataResponses) {
-                    if (scoreResponseRequest == null) {
-                        scoreResponseRequest = ProcessScoreSpiceRequest.getCachedSpiceRequest
-                                (mHistory, artistDataResponses);
-                    }
-                    getLastFmSpiceManager().execute(scoreResponseRequest, scoreResponseListener);
+                public void onSpringUpdate(Spring spring) {
+                    renderButton(dunno, dunnoButtonSpring);
                 }
-            };
+            });
+    private Spring imageSpring = springSystem.createSpring()
+            .setSpringConfig(ORIGAMI_SPRING_CONFIG)
+            .addListener(new SimpleSpringListener() {
+                @Override
+                public void onSpringUpdate(Spring spring) {
+                    renderImage();
+                }
+            });
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -224,6 +206,11 @@ public class HipSpiceFragment extends Fragment {
     }
 
     private void rankArtist(String classification) {
+        titleSpring.setEndValue(0);
+        yesButtonSpring.setEndValue(0);
+        noButtonSpring.setEndValue(0);
+        dunnoButtonSpring.setEndValue(0);
+        imageSpring.setEndValue(0);
         if (!mArtistIdList.isEmpty()) {
             loadingInterface.onLoadingStarted();
             getThomasSpiceManager().execute(
@@ -273,9 +260,6 @@ public class HipSpiceFragment extends Fragment {
     private void loadFirstArtist() {
         if (!mArtistIdList.isEmpty()) {
             CachedSpiceRequest<RealBaseArtist> cachedSpiceRequest;
-            /*  what a bad-ass motherfucking regex
-             *  this checks if the id is an mbid or an actual artist name
-             */
             String firstArtist = mArtistIdList.get(0);
             if (Utils.isMbid(firstArtist)) {
                 cachedSpiceRequest = ArtistSpiceRequest.getCachedSpiceRequest(
@@ -288,6 +272,7 @@ public class HipSpiceFragment extends Fragment {
                     cachedSpiceRequest,
                     artistRequestListener
             );
+            titleSpring.setEndValue(0);
         }
     }
 
@@ -295,6 +280,162 @@ public class HipSpiceFragment extends Fragment {
         loadingInterface.onLoadingFinished();
         spiceException.printStackTrace();
         Toast.makeText(getActivity(), spiceException.getMessage(), Toast.LENGTH_SHORT).show();
+    }
+
+    PendingRequestListener<ArtistDataResponse.ArtistList> artistListListener =
+            new PendingRequestListener<ArtistDataResponse.ArtistList>() {
+
+                @Override
+                public void onRequestFailure(SpiceException spiceException) {
+                    showToast(spiceException);
+                }
+
+                @Override
+                public void onRequestSuccess(ArtistDataResponse.ArtistList artistDataResponses) {
+                    loadingInterface.onLoadingFinished();
+                    for (ArtistDataResponse data : artistDataResponses) {
+                        mArtistIdList.add(data.getArtistId());
+                    }
+                    loadFirstArtist();
+                }
+
+                @Override
+                public void onRequestNotFound() {
+                    getThomasSpiceManager().execute(artistListRequest, this);
+                }
+            };
+
+    PendingRequestListener<ProcessScoreSpiceRequest.ScoreResponse> scoreResponseListener =
+            new PendingRequestListener<ProcessScoreSpiceRequest.ScoreResponse>() {
+
+                @Override
+                public void onRequestFailure(SpiceException spiceException) {
+                    showToast(spiceException);
+                }
+
+                @Override
+                public void onRequestSuccess(ProcessScoreSpiceRequest.ScoreResponse scoreResponse) {
+                    loadingInterface.onLoadingFinished();
+                    loadingDone = true;
+                    Toast.makeText(getActivity(), "Score is really finally done loaded",
+                            Toast.LENGTH_LONG).show();
+
+                }
+
+                @Override
+                public void onRequestNotFound() {
+
+                }
+            };
+
+    RequestListener<RankArtistsSpicePost.ArtistLookup> artistLookupListener =
+            new RequestListener<RankArtistsSpicePost.ArtistLookup>() {
+
+                @Override
+                public void onRequestFailure(SpiceException spiceException) {
+                    showToast(spiceException);
+                }
+
+                @Override
+                public void onRequestSuccess(RankArtistsSpicePost.ArtistLookup artistDataResponses) {
+                    if (scoreResponseRequest == null) {
+                        scoreResponseRequest = ProcessScoreSpiceRequest.getCachedSpiceRequest
+                                (mHistory, artistDataResponses);
+                    }
+                    getLastFmSpiceManager().execute(scoreResponseRequest, scoreResponseListener);
+                }
+            };
+
+    RequestListener<RealBaseArtist> artistRequestListener = new RequestListener<RealBaseArtist>() {
+
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            showToast(spiceException);
+        }
+
+        @Override
+        public void onRequestSuccess(RealBaseArtist realArtist) {
+            loadingInterface.onLoadingFinished();
+            artistName.setText(realArtist.getName());
+            artistName.setVisibility(View.VISIBLE);
+            no.setVisibility(View.VISIBLE);
+            yes.setVisibility(View.VISIBLE);
+            dunno.setVisibility(View.VISIBLE);
+            titleSpring.setEndValue(1);
+            noButtonSpring.setEndValue(1);
+            yesButtonSpring.setEndValue(1);
+            dunnoButtonSpring.setEndValue(1);
+            mPicasso.load(realArtist.getImage(getActivity()))
+                    .centerCrop()
+                    .resize(imageSize, imageSize)
+                    .transform(roundedTransformation)
+                    .noFade()
+                    .into(imageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            imageSpring.setEndValue(1);
+                        }
+
+                        @Override
+                        public void onError() {
+                            imageSpring.setEndValue(1);
+                        }
+                    });
+        }
+    };
+
+    void renderTitle() {
+        Resources resources = getResources();
+        double value = titleSpring.getCurrentValue();
+
+        float selectedTitleScale = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1, .33,
+                1);
+        selectedTitleScale = Math.max(selectedTitleScale, 0);
+        artistName.setScaleX(selectedTitleScale);
+        artistName.setScaleY(selectedTitleScale);
+
+        float titleTranslateX = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1,
+                Util.dpToPx(-250.667f, resources), 0);
+        float titleTranslateY = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1,
+                Util.dpToPx(-146.667f, resources), 0);
+        artistName.setTranslationX(titleTranslateX);
+        artistName.setTranslationY(titleTranslateY);
+    }
+
+    void renderButton(View v, Spring s) {
+        Resources resources = getResources();
+        double value = s.getCurrentValue();
+
+        float selectedTitleScale = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1, .33,
+                1);
+        selectedTitleScale = Math.max(selectedTitleScale, 0);
+        v.setScaleX(selectedTitleScale);
+        v.setScaleY(selectedTitleScale);
+
+        float titleTranslateX = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1,
+                Util.dpToPx(-206.667f, resources), 0);
+        float titleTranslateY = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1,
+                Util.dpToPx(46.667f, resources), 0);
+        v.setTranslationX(titleTranslateX);
+        v.setTranslationY(titleTranslateY);
+    }
+
+    private void renderImage() {
+        Resources resources = getResources();
+        double value = imageSpring.getCurrentValue();
+
+        float selectedTitleScale = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1, .33,
+                1);
+        selectedTitleScale = Math.max(selectedTitleScale, 0);
+        imageView.setScaleX(selectedTitleScale);
+        imageView.setScaleY(selectedTitleScale);
+
+        float titleTranslateX = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1,
+                Util.dpToPx(-206.667f, resources), 0);
+        float titleTranslateY = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1,
+                Util.dpToPx(46.667f, resources), 0);
+        imageView.setTranslationX(titleTranslateX);
+        imageView.setTranslationY(titleTranslateY);
     }
 
     private class RankArtistRequestListener implements RequestListener<String> {
