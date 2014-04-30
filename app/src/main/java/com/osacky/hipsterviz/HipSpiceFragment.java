@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -56,6 +57,7 @@ public class HipSpiceFragment extends Fragment {
     private static final String TAG = "HipSpiceFragment";
     private static final int ARTISTS_LOAD_LIMIT = 20;
     protected LoadingInterface loadingInterface;
+    private ProcessScoreSpiceRequest.ScoreResponse mScoreResponse;
 
     @ViewById(R.id.hipster_artist_name)
     SpringyFontFitTextView artistName;
@@ -162,7 +164,12 @@ public class HipSpiceFragment extends Fragment {
 
     @OptionsItem(R.id.action_show_score)
     void handleShowScore() {
-        //TODO show the user's score
+        GraphFragment newFragment = new GraphFragment_();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, newFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+        newFragment.setmScoreResponse(mScoreResponse);
     }
 
     private void handleTouch(MotionEvent event, SpringyButton button, String classification) {
@@ -277,6 +284,7 @@ public class HipSpiceFragment extends Fragment {
                     if (totalRated > 10) {
                         setHasOptionsMenu(true);
                     }
+                    mScoreResponse = scoreResponse;
                 }
 
                 @Override

@@ -127,5 +127,8 @@ public class ProcessScoreSpiceRequest
         int totalListens;
         HashMap<String, Integer> artistScoreLookup = new HashMap<String, Integer>();
 
+        public SparseArray<Float> getScoreArray() {
+            return scoreArray;
+        }
     }
 }
