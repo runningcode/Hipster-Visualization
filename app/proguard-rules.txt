@@ -15,3 +15,11 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-dontwarn com.squareup.**
+-dontwarn org.androidannotations.api**
+-dontwarn org.joda.time.**
+-dontwarn retrofit.**
+-dontwarn com.octo.android.robospice.**
+
+-keepattributes LineNumberTable
