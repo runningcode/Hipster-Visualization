@@ -56,7 +56,7 @@ public class EntireHistorySpiceRequest extends RetrofitSpiceRequest<EntireHistor
         long key;
         String identifier;
         for (TrackListTrack track : historyPage.getTrack()) {
-            key = (Utils.roundDays(track.getDateTime()).getMillis());
+            key = (Utils.roundWeek(track.getDateTime()).getMillis());
             identifier = track.getArtist().getIdentifier();
             List<String> identifiers = response.historyMap.get(key);
             if (identifiers == null) {

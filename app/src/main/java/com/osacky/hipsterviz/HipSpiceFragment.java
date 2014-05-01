@@ -76,6 +76,7 @@ public class HipSpiceFragment extends Fragment {
     private Picasso mPicasso;
     private RoundedTransformation roundedTransformation;
     private List<String> mArtistIdList = new ArrayList<String>();
+    //    private List<RealBaseArtist> mArtistList = new ArrayList<RealBaseArtist>();
     private SpiceManager thomasSpiceManager = new SpiceManager(ThomasApiService.class);
     private SpiceManager lastFmSpiceManager = new SpiceManager(LastFmSpiceService.class);
     private SharedPreferences mSharedPreferences;
@@ -137,11 +138,11 @@ public class HipSpiceFragment extends Fragment {
         yesText.setTypeface(normalFace);
         noText.setTypeface(normalFace);
         dunnoText.setTypeface(normalFace);
-//        if (loadingDone && totalRated > 10) {
-        setHasOptionsMenu(true);
-//        } else {
-//            setHasOptionsMenu(false);
-//        }
+        if (loadingDone && totalRated > 10) {
+            setHasOptionsMenu(true);
+        } else {
+            setHasOptionsMenu(false);
+        }
     }
 
     @Touch(R.id.hipster_button_yes)
@@ -188,7 +189,8 @@ public class HipSpiceFragment extends Fragment {
         imageView.setEndValue(0);
         if (!mArtistIdList.isEmpty()) {
             getThomasSpiceManager().execute(
-                    RankSpicePost.getCachedSpiceRequest(mArtistIdList.get(0), classification),
+                    RankSpicePost.getCachedSpiceRequest(mArtistIdList.get(0),
+                            classification),
                     rankArtistRequestListener
             );
         }
@@ -323,9 +325,14 @@ public class HipSpiceFragment extends Fragment {
 
         @Override
         public void onRequestSuccess(RealBaseArtist realArtist) {
-            artistName.setText(realArtist.getName());
-            artistName.setVisibility(View.VISIBLE);
-            setSpringValues(1);
+            showArtist(realArtist);
+        }
+    };
+
+    private void showArtist(RealBaseArtist realArtist) {
+        artistName.setText(realArtist.getName());
+        artistName.setVisibility(View.VISIBLE);
+        setSpringValues(1);
             mPicasso.load(realArtist.getImage(getActivity()))
                     .centerCrop()
                     .resize(imageSize, imageSize)
@@ -344,8 +351,7 @@ public class HipSpiceFragment extends Fragment {
                             imageView.setEndValue(1);
                         }
                     });
-        }
-    };
+    }
 
     private void setSpringValues(double value) {
         artistName.setEndValue(value);

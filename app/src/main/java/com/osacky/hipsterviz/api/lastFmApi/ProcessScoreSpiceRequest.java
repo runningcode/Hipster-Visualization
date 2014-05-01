@@ -8,13 +8,15 @@ import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
 import com.osacky.hipsterviz.api.thomasApi.RankArtistsSpicePost;
 import com.osacky.hipsterviz.models.ArtistDataResponse;
 import com.osacky.hipsterviz.models.artist.RealBaseArtist;
-import com.osacky.hipsterviz.utils.Utils;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import static com.osacky.hipsterviz.models.ArtistDataResponse.HIPSTER;
+import static com.osacky.hipsterviz.models.ArtistDataResponse.MAINSTREAM;
 
 public class ProcessScoreSpiceRequest
         extends RetrofitSpiceRequest<ProcessScoreSpiceRequest.ScoreResponse, LastFmApi> {
@@ -51,20 +53,15 @@ public class ProcessScoreSpiceRequest
             Log.i(TAG, "current progress " + response.totalArtists + "/" + mHistory.getAllArtists()
                     .size());
             publishProgress(response.totalArtists * 1.0f / mHistory.getAllArtists().size());
-            RealBaseArtist artistInfoByName;
-            if (Utils.isMbid(artist)) {
-                artistInfoByName = getService().getArtistInfoByMbid(artist);
-            } else {
-                artistInfoByName = getService().getArtistInfoByName(artist);
-            }
-            final int classification = classifyArtist(artistInfoByName);
-            switch (classification) {
-                case INDIE:
-                    response.totalHipsterArtists++;
-                    break;
-                case POP:
-                    response.totalPopArtists++;
-                    break;
+
+            final String classificationString = mArtistResponse.get(artist).getClassification();
+            int classification = UNKNOWN;
+            if (classificationString.equals(HIPSTER)) {
+                response.totalHipsterArtists++;
+                classification = INDIE;
+            } else if (classificationString.equals(MAINSTREAM)) {
+                response.totalPopArtists++;
+                classification = POP;
             }
             response.artistScoreLookup.put(artist, classification);
             response.totalArtists++;
@@ -93,6 +90,8 @@ public class ProcessScoreSpiceRequest
         return response;
     }
 
+    // this is now being done server side
+    @SuppressWarnings("unused")
     private int classifyArtist(RealBaseArtist realArtist) throws Exception {
         String identifier = realArtist.getIdentifier();
         if (!mArtistResponse.containsKey(identifier)) {
@@ -135,6 +134,34 @@ public class ProcessScoreSpiceRequest
 
         public TreeMap<Long, Double> getScoreArray() {
             return scoreArray;
+        }
+
+        public int getTotalArtists() {
+            return totalArtists;
+        }
+
+        public int getTotalHipsterArtists() {
+            return totalHipsterArtists;
+        }
+
+        public int getTotalPopArtists() {
+            return totalPopArtists;
+        }
+
+        public int getTotalHipsterArtistListens() {
+            return totalHipsterArtistListens;
+        }
+
+        public int getTotalPopArtistListens() {
+            return totalPopArtistListens;
+        }
+
+        public int getTotalListens() {
+            return totalListens;
+        }
+
+        public HashMap<String, Integer> getArtistScoreLookup() {
+            return artistScoreLookup;
         }
     }
 }

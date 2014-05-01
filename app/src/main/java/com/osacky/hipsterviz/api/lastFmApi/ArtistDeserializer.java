@@ -14,7 +14,8 @@ import com.osacky.hipsterviz.models.artist.RealBaseArtist;
 import java.lang.reflect.Type;
 
 @SuppressWarnings("unused")
-class ArtistDeserializer<T extends RealBaseArtist> implements JsonDeserializer<RealBaseArtist> {
+public class ArtistDeserializer<T extends RealBaseArtist> implements
+        JsonDeserializer<RealBaseArtist> {
 
     private static final String TAG = "ArtistDeserializer";
 

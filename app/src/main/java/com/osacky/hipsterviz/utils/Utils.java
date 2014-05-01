@@ -19,6 +19,14 @@ public class Utils {
         return new DateTime(t, dt.getZone()).dayOfMonth().roundFloorCopy();
     }
 
+    public static DateTime roundWeek(ReadableInstant dt) {
+        long millisPerWeek = DateTimeConstants.MILLIS_PER_WEEK;
+
+        long t = dt.getMillis() / millisPerWeek * millisPerWeek;
+        // Keep TimeZone and round floor to a day
+        return new DateTime(t, dt.getZone()).weekOfWeekyear().roundFloorCopy();
+    }
+
     public static boolean isMbid(String artist) {
         return artist.matches("^([0-9a-f]*-[0-9a-f]*){4}$");
     }
