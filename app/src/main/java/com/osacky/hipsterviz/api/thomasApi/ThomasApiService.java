@@ -28,7 +28,7 @@ public class ThomasApiService extends RetrofitGsonSpiceService {
     @Override
     protected Converter createConverter() {
         return new GsonConverter(new GsonBuilder()
-                .registerTypeAdapter(RealBaseArtist.class, new ArtistDeserializer<RealBaseArtist>())
+                .registerTypeAdapter(RealBaseArtist.class, new ArtistDeserializer<>())
                 .create());
     }
 

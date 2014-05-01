@@ -26,7 +26,7 @@ public class RankArtistsSpicePost extends RetrofitSpiceRequest<RankArtistsSpiceP
 
     public static CachedSpiceRequest<ArtistLookup> getCachedSpiceRequest(String artistIds) {
         RankArtistsSpicePost rankSpicePost = new RankArtistsSpicePost(artistIds);
-        return new CachedSpiceRequest<ArtistLookup>(rankSpicePost, artistIds, cacheDuration);
+        return new CachedSpiceRequest<>(rankSpicePost, artistIds, cacheDuration);
     }
 
     @Override

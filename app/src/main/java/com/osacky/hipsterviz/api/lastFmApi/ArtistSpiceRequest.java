@@ -22,7 +22,7 @@ public class ArtistSpiceRequest extends RetrofitSpiceRequest<RealBaseArtist, Las
 
     public static CachedSpiceRequest<RealBaseArtist> getCachedSpiceRequest(String id, boolean isMbid) {
         ArtistSpiceRequest historyPageSpiceRequest = new ArtistSpiceRequest(id, isMbid);
-        return new CachedSpiceRequest<RealBaseArtist>(historyPageSpiceRequest, id, cacheDuration);
+        return new CachedSpiceRequest<>(historyPageSpiceRequest, id, cacheDuration);
     }
 
     @Override

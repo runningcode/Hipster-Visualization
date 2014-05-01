@@ -20,7 +20,7 @@ public class HistoryPageSpiceRequest extends RetrofitSpiceRequest<TrackHistoryPa
 
     public static CachedSpiceRequest<TrackHistoryPage> getCachedSpiceRequest(String username, int page, long cacheDuration) {
         HistoryPageSpiceRequest historyPageSpiceRequest = new HistoryPageSpiceRequest(username, page);
-        return new CachedSpiceRequest<TrackHistoryPage>(historyPageSpiceRequest, username + page, cacheDuration);
+        return new CachedSpiceRequest<>(historyPageSpiceRequest, username + page, cacheDuration);
     }
 
     @Override

@@ -75,7 +75,7 @@ public class HipSpiceFragment extends Fragment {
 
     private Picasso mPicasso;
     private RoundedTransformation roundedTransformation;
-    private List<String> mArtistIdList = new ArrayList<String>();
+    private List<String> mArtistIdList = new ArrayList<>();
     //    private List<RealBaseArtist> mArtistList = new ArrayList<RealBaseArtist>();
     private SpiceManager thomasSpiceManager = new SpiceManager(ThomasApiService.class);
     private SpiceManager lastFmSpiceManager = new SpiceManager(LastFmSpiceService.class);

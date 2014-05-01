@@ -22,7 +22,7 @@ public class RankSpicePost extends RetrofitSpiceRequest<String, ThomasApi> {
 
     public static CachedSpiceRequest<String> getCachedSpiceRequest(String artistId, String classification) {
         RankSpicePost rankSpicePost = new RankSpicePost(artistId, classification);
-        return new CachedSpiceRequest<String>(rankSpicePost, artistId, cacheDuration);
+        return new CachedSpiceRequest<>(rankSpicePost, artistId, cacheDuration);
     }
 
     @Override

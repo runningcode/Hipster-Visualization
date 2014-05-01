@@ -13,6 +13,7 @@ import com.osacky.hipsterviz.utils.Utils;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 public class EntireHistorySpiceRequest extends RetrofitSpiceRequest<EntireHistorySpiceRequest.EntireHistoryResponse,
@@ -32,7 +33,7 @@ public class EntireHistorySpiceRequest extends RetrofitSpiceRequest<EntireHistor
 
     public static CachedSpiceRequest<EntireHistoryResponse> getCachedSpiceRequest(String username) {
         EntireHistorySpiceRequest historyPageSpiceRequest = new EntireHistorySpiceRequest(username);
-        return new CachedSpiceRequest<EntireHistoryResponse>(historyPageSpiceRequest, username, cacheDuration);
+        return new CachedSpiceRequest<>(historyPageSpiceRequest, username, cacheDuration);
     }
 
     @Override
@@ -60,7 +61,7 @@ public class EntireHistorySpiceRequest extends RetrofitSpiceRequest<EntireHistor
             identifier = track.getArtist().getIdentifier();
             List<String> identifiers = response.historyMap.get(key);
             if (identifiers == null) {
-                identifiers = new ArrayList<String>();
+                identifiers = new ArrayList<>();
                 response.historyMap.put(key, identifiers);
             }
             identifiers.add(identifier);
@@ -69,15 +70,15 @@ public class EntireHistorySpiceRequest extends RetrofitSpiceRequest<EntireHistor
     }
 
     public static class EntireHistoryResponse {
-        HashSet<String> allArtists = new HashSet<String>();
+        HashSet<String> allArtists = new HashSet<>();
 
-        TreeMap<Long, List<String>> historyMap = new TreeMap<Long, List<String>>();
+        Map<Long, List<String>> historyMap = new TreeMap<>();
 
         public HashSet<String> getAllArtists() {
             return allArtists;
         }
 
-        public TreeMap<Long, List<String>> getHistoryMap() {
+        public Map<Long, List<String>> getHistoryMap() {
             return historyMap;
         }
     }

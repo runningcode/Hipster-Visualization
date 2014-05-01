@@ -42,7 +42,7 @@ public class ProcessScoreSpiceRequest
             (EntireHistorySpiceRequest.EntireHistoryResponse history,
              RankArtistsSpicePost.ArtistLookup artistList) {
         ProcessScoreSpiceRequest historyPageSpiceRequest = new ProcessScoreSpiceRequest(history, artistList);
-        return new CachedSpiceRequest<ScoreResponse>(historyPageSpiceRequest, "score",
+        return new CachedSpiceRequest<>(historyPageSpiceRequest, "score",
                 cacheDuration);
     }
 
@@ -123,14 +123,14 @@ public class ProcessScoreSpiceRequest
     }
 
     public static class ScoreResponse implements Serializable {
-        TreeMap<Long, Double> scoreArray = new TreeMap<Long, Double>();
+        TreeMap<Long, Double> scoreArray = new TreeMap<>();
         int totalArtists;
         int totalHipsterArtists;
         int totalPopArtists;
         int totalHipsterArtistListens;
         int totalPopArtistListens;
         int totalListens;
-        HashMap<String, Integer> artistScoreLookup = new HashMap<String, Integer>();
+        HashMap<String, Integer> artistScoreLookup = new HashMap<>();
 
         public TreeMap<Long, Double> getScoreArray() {
             return scoreArray;

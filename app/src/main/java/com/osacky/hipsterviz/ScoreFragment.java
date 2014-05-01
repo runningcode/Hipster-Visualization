@@ -30,12 +30,10 @@ public class ScoreFragment extends Fragment {
         Typeface boldFace = Typeface.createFromAsset(getResources().getAssets(), "fonts/OpenSans-Bold.ttf");
         if (mScoreResponse.getTotalHipsterArtistListens() > mScoreResponse
                 .getTotalPopArtistListens()) {
-            // HIPSTER
             imageView.setImageResource(R.drawable.ic_hipsterbadge);
             titleScore.setText("You are a hipster");
         } else if (mScoreResponse.getTotalPopArtistListens() > mScoreResponse
                 .getTotalHipsterArtistListens()) {
-            // POP
             titleScore.setText("You are not a hipster");
             imageView.setImageResource(R.drawable.ic_not_hipster_badge);
         } else {
@@ -53,12 +51,12 @@ public class ScoreFragment extends Fragment {
             public void run() {
                 titleScore.setEndValue(1);
             }
-        }, 1000);
+        }, 800);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 imageView.setEndValue(1);
             }
-        }, 500);
+        }, 300);
     }
 }

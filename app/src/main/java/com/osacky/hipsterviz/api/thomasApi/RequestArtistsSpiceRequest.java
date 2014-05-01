@@ -20,7 +20,7 @@ public class RequestArtistsSpiceRequest extends RetrofitSpiceRequest<ArtistDataR
 
     public static CachedSpiceRequest<ArtistDataResponse.ArtistList> getCachedSpiceRequest(int limit) {
         RequestArtistsSpiceRequest historyPageSpiceRequest = new RequestArtistsSpiceRequest(limit);
-        return new CachedSpiceRequest<ArtistDataResponse.ArtistList>(historyPageSpiceRequest, limit, cacheDuration);
+        return new CachedSpiceRequest<>(historyPageSpiceRequest, limit, cacheDuration);
     }
 
     @Override

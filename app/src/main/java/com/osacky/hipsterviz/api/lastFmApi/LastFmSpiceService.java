@@ -42,8 +42,8 @@ public class LastFmSpiceService extends RetrofitGsonSpiceService {
                 .registerTypeAdapter(User.class, new LastFmDeserializer<User>("user"))
                 .registerTypeAdapter(TrackListTrack.class, new LastFmDeserializer<TrackListTrack>("track"))
                 .registerTypeAdapter(TrackHistoryPage.class, new LastFmDeserializer<TrackHistoryPage>("recenttracks"))
-                .registerTypeAdapter(RealBaseTrack.class, new TrackDeserializer<RealBaseTrack>())
-                .registerTypeAdapter(RealBaseArtist.class, new ArtistDeserializer<RealBaseArtist>())
+                .registerTypeAdapter(RealBaseTrack.class, new TrackDeserializer<>())
+                .registerTypeAdapter(RealBaseArtist.class, new ArtistDeserializer<>())
                 .create());
     }
 

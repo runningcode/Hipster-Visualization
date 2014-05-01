@@ -29,12 +29,12 @@ public class TrackSpiceRequest extends RetrofitSpiceRequest<RealBaseTrack, LastF
 
     public static CachedSpiceRequest<RealBaseTrack> getCachedSpiceRequest(String mbid) {
         TrackSpiceRequest trackSpiceRequest = new TrackSpiceRequest(mbid);
-        return new CachedSpiceRequest<RealBaseTrack>(trackSpiceRequest, mbid, cachePolicy);
+        return new CachedSpiceRequest<>(trackSpiceRequest, mbid, cachePolicy);
     }
 
     public static CachedSpiceRequest<RealBaseTrack> getCachedSpiceRequest(String track, String artist) {
         TrackSpiceRequest trackSpiceRequest = new TrackSpiceRequest(track, artist);
-        return new CachedSpiceRequest<RealBaseTrack>(trackSpiceRequest, track + artist, cachePolicy);
+        return new CachedSpiceRequest<>(trackSpiceRequest, track + artist, cachePolicy);
     }
 
     @Override
