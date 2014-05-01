@@ -1,6 +1,6 @@
 package com.osacky.hipsterviz.api.lastFmApi;
 
-import android.util.SparseArray;
+import android.util.Log;
 
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.request.CachedSpiceRequest;
@@ -13,6 +13,8 @@ import com.osacky.hipsterviz.utils.Utils;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class ProcessScoreSpiceRequest
         extends RetrofitSpiceRequest<ProcessScoreSpiceRequest.ScoreResponse, LastFmApi> {
@@ -46,6 +48,9 @@ public class ProcessScoreSpiceRequest
     public ScoreResponse loadDataFromNetwork() throws Exception {
         ScoreResponse response = new ScoreResponse();
         for (String artist : mHistory.getAllArtists()) {
+            Log.i(TAG, "current progress " + response.totalArtists + "/" + mHistory.getAllArtists()
+                    .size());
+            publishProgress(response.totalArtists * 1.0f / mHistory.getAllArtists().size());
             RealBaseArtist artistInfoByName;
             if (Utils.isMbid(artist)) {
                 artistInfoByName = getService().getArtistInfoByMbid(artist);
@@ -64,16 +69,16 @@ public class ProcessScoreSpiceRequest
             response.artistScoreLookup.put(artist, classification);
             response.totalArtists++;
         }
-        final SparseArray<List<String>> historyMap = mHistory.getHistoryMap();
-        int key;
-        for (int i = 0; i < historyMap.size(); i++) {
-            key = historyMap.keyAt(i);
-            final List<String> artistIds = historyMap.get(key);
-            int songsForToday = artistIds.size();
+        for (Map.Entry<Long, List<String>> entry : mHistory.getHistoryMap().entrySet()) {
+            int songsForToday = entry.getValue().size();
+            // don't add a data point if we didn't listen to songs this day
+            if (songsForToday == 0) {
+                continue;
+            }
             response.totalListens += songsForToday;
             int todayIndieListens = 0;
             int todayPopListens = 0;
-            for (String string : artistIds) {
+            for (String string : entry.getValue()) {
                 int songClass = response.artistScoreLookup.get(string);
                 if (songClass == INDIE) {
                     todayIndieListens++;
@@ -83,7 +88,7 @@ public class ProcessScoreSpiceRequest
             }
             response.totalHipsterArtistListens += todayIndieListens;
             response.totalPopArtistListens += todayPopListens;
-            response.scoreArray.put(key, 1.0 * todayIndieListens / songsForToday);
+            response.scoreArray.put(entry.getKey(), 1.0 * todayIndieListens / songsForToday);
         }
         return response;
     }
@@ -119,16 +124,16 @@ public class ProcessScoreSpiceRequest
     }
 
     public static class ScoreResponse implements Serializable {
-        SparseArray<Double> scoreArray = new SparseArray<Double>();
+        TreeMap<Long, Double> scoreArray = new TreeMap<Long, Double>();
         int totalArtists;
         int totalHipsterArtists;
         int totalPopArtists;
-        int totalHipsterArtistListens = 0;
-        int totalPopArtistListens = 0;
+        int totalHipsterArtistListens;
+        int totalPopArtistListens;
         int totalListens;
         HashMap<String, Integer> artistScoreLookup = new HashMap<String, Integer>();
 
-        public SparseArray<Double> getScoreArray() {
+        public TreeMap<Long, Double> getScoreArray() {
             return scoreArray;
         }
     }

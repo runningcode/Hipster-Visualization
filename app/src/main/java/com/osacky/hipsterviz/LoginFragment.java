@@ -77,7 +77,7 @@ public class LoginFragment extends BaseSpiceFragment implements RequestListener<
         editor.putString(getString(R.string.PREF_USERNAME), user.getName());
         editor.commit();
 
-        MainActivity_.intent(getActivity()).start();
+        RateActivity_.intent(getActivity()).start();
         getActivity().finish();
     }
 }

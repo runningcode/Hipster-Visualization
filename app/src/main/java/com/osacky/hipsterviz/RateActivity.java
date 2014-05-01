@@ -15,7 +15,7 @@ import org.androidannotations.annotations.WindowFeature;
 
 @EActivity(R.layout.activity_blank)
 @WindowFeature({Window.FEATURE_PROGRESS, Window.FEATURE_INDETERMINATE_PROGRESS})
-public class MainActivity extends ActionBarActivity implements LoadingInterface {
+public class RateActivity extends ActionBarActivity implements LoadingInterface {
 
     public static final int MAX_PROGRESS = 10000;
     @SuppressWarnings("unused")

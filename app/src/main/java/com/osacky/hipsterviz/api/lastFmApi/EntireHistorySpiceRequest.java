@@ -1,7 +1,6 @@
 package com.osacky.hipsterviz.api.lastFmApi;
 
 import android.util.Log;
-import android.util.SparseArray;
 
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.request.CachedSpiceRequest;
@@ -14,6 +13,7 @@ import com.osacky.hipsterviz.utils.Utils;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.TreeMap;
 
 public class EntireHistorySpiceRequest extends RetrofitSpiceRequest<EntireHistorySpiceRequest.EntireHistoryResponse,
         LastFmApi> {
@@ -53,10 +53,10 @@ public class EntireHistorySpiceRequest extends RetrofitSpiceRequest<EntireHistor
         totalPages = attr.getTotalPages();
         currentPage = attr.getPage();
 
-        int key;
+        long key;
         String identifier;
         for (TrackListTrack track : historyPage.getTrack()) {
-            key = (int) (Utils.roundDays(track.getDateTime()).getMillis() / 1000);
+            key = (Utils.roundDays(track.getDateTime()).getMillis());
             identifier = track.getArtist().getIdentifier();
             List<String> identifiers = response.historyMap.get(key);
             if (identifiers == null) {
@@ -70,13 +70,14 @@ public class EntireHistorySpiceRequest extends RetrofitSpiceRequest<EntireHistor
 
     public static class EntireHistoryResponse {
         HashSet<String> allArtists = new HashSet<String>();
-        SparseArray<List<String>> historyMap = new SparseArray<List<String>>();
+
+        TreeMap<Long, List<String>> historyMap = new TreeMap<Long, List<String>>();
 
         public HashSet<String> getAllArtists() {
             return allArtists;
         }
 
-        public SparseArray<List<String>> getHistoryMap() {
+        public TreeMap<Long, List<String>> getHistoryMap() {
             return historyMap;
         }
     }

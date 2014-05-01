@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clipToPadding="false"
-    android:fitsSystemWindows="true"
-    android:id="@+id/graph_container">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             tools:context="com.osacky.hipsterviz.GraphFragment_"
+             android:orientation="vertical"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:clipToPadding="false"
+             android:fitsSystemWindows="true"
+             android:id="@+id/graph_container">
 
-</LinearLayout>
+</FrameLayout>

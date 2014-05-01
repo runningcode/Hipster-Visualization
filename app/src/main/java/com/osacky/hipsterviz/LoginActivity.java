@@ -17,7 +17,7 @@ public class LoginActivity extends FragmentActivity implements LoadingInterface 
         super.onCreate(savedInstanceState);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (!(sharedPreferences.getString(getString(R.string.PREF_USERNAME), "").length() == 0)) {
-            MainActivity_.intent(this).start();
+            RateActivity_.intent(this).start();
             finish();
         }
     }
