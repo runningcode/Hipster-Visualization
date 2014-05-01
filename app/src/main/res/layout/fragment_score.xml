@@ -5,13 +5,15 @@
              android:layout_height="match_parent"
              tools:context="com.osacky.hipsterviz.ScoreFragment">
 
-    <com.osacky.hipsterviz.views.FontFitTextView
+    <com.osacky.hipsterviz.views.SpringyFontFitTextView
+        android:id="@+id/score_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:startY="-100dp"
         />
 
     <com.osacky.hipsterviz.views.SpringyImageView
+        android:id="@+id/score_badge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_hipsterbadge"

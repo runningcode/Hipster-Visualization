@@ -2,6 +2,7 @@ package com.osacky.hipsterviz.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -60,11 +61,12 @@ public class SpringyButton extends FrameLayout implements SpringListener {
                 value, 0, 1, mStartX, 0);
         float titleTranslateY = (float) SpringUtil.mapValueFromRangeToRange(
                 value, 0, 1, mStartY, 0);
-
-        setScaleX(selectedTitleScale);
-        setScaleY(selectedTitleScale);
-        setTranslationX(titleTranslateX);
-        setTranslationY(titleTranslateY);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            setScaleX(selectedTitleScale);
+            setScaleY(selectedTitleScale);
+            setTranslationX(titleTranslateX);
+            setTranslationY(titleTranslateY);
+        }
     }
 
     @Override

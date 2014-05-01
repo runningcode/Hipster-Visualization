@@ -36,7 +36,7 @@
         <activity
             android:name=".TrackDetailActivity_"
             android:label="Track"
-            android:theme="@style/AppTheme.Orange"
+            android:theme="@style/AppTheme.Blue"
             android:parentActivityName=".ScoreActivity_">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -51,7 +51,7 @@
             android:parentActivityName=".RateActivity_">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.osacky.hipsterviz.MainActivity_"/>
+                android:value="com.osacky.hipsterviz.RateActivity_"/>
         </activity>
 
         <service android:name=".api.lastFmApi.LastFmSpiceService"/>

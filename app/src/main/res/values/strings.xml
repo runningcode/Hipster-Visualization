@@ -3,8 +3,6 @@
 
     <string name="app_name">ster</string>
     <string name="action_settings">Settings</string>
-    <string name="PREF_SAVED_HISTORY">pref_saved_history</string>
-    <string name="PREF_USERNAME">pref_username</string>
 
     <!-- image descriptions -->
     <string name="track_image_desc">Track Image</string>
@@ -14,11 +12,15 @@
     <string name="yes_text">Hipster</string>
     <string name="no_text">Not hipster</string>
     <string name="dunno_text">Never heard it</string>
+
     <string name="user_name">last.fm username</string>
     <string name="too_short">Please input at least one character</string>
     <string name="action_show_score">Show Score</string>
     <string name="welcome_string">Welcome %1$s!</string>
     <string name="chart_title">Hipster score over time</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="PREF_SAVED_HISTORY">pref_saved_history</string>
+    <string name="PREF_USERNAME">pref_username</string>
+    <string name="PREF_NUMBER_LOADED">num_loaded</string>
 
 </resources>

@@ -38,22 +38,24 @@ public class GraphFragment extends Fragment {
 
     @AfterViews
     void initGraph() {
-        final TreeMap<Long, Double> scoreArray = mScoreResponse.getScoreArray();
-        final double width = scoreArray.lastKey() - scoreArray.firstKey();
-        final GraphView graphView = new LineGraphView(getActivity(), getString(R.string.chart_title));
+        if (mScoreResponse != null) {
+            final TreeMap<Long, Double> scoreArray = mScoreResponse.getScoreArray();
+            final double width = scoreArray.lastKey() - scoreArray.firstKey();
+            final GraphView graphView = new LineGraphView(getActivity(), getString(R.string.chart_title));
 
-        GraphViewData[] data = new GraphViewData[scoreArray.size()];
-        int i = 0;
-        for (Map.Entry<Long, Double> entry : scoreArray.entrySet()) {
-            data[i] = new GraphViewData(entry.getKey(), entry.getValue());
-            i++;
+            GraphViewData[] data = new GraphViewData[scoreArray.size()];
+            int i = 0;
+            for (Map.Entry<Long, Double> entry : scoreArray.entrySet()) {
+                data[i] = new GraphViewData(entry.getKey(), entry.getValue());
+                i++;
+            }
+
+            final GraphViewSeriesStyle graphViewSeriesStyle = new GraphViewSeriesStyle(Color.WHITE, 4);
+            graphView.addSeries(new GraphViewSeries("Score", graphViewSeriesStyle, data));
+            graphView.setViewPort(0, width);
+            graphView.setScalable(true);
+            graphView.setScrollable(true);
+            graphContainer.addView(graphView);
         }
-
-        final GraphViewSeriesStyle graphViewSeriesStyle = new GraphViewSeriesStyle(Color.WHITE, 4);
-        graphView.addSeries(new GraphViewSeries("Score", graphViewSeriesStyle, data));
-        graphView.setViewPort(0, width);
-        graphView.setScalable(true);
-        graphView.setScrollable(true);
-        graphContainer.addView(graphView);
     }
 }

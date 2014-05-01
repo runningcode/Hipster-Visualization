@@ -3,7 +3,8 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              tools:context="com.osacky.hipsterviz.TrackDetailFragment">
+              tools:context="com.osacky.hipsterviz.TrackDetailFragment"
+              android:paddingTop="?attr/actionBarSize">
 
     <include layout="@layout/item_track"/>
 

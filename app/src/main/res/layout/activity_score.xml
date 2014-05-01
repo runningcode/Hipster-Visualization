@@ -1,0 +1,17 @@
+<android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+                                   xmlns:tools="http://schemas.android.com/tools"
+                                   android:id="@+id/pager"
+                                   android:layout_width="match_parent"
+                                   android:layout_height="match_parent"
+                                   tools:context="com.osacky.hipsterviz.ScoreActivity_"
+                                   android:clipToPadding="false"
+                                   android:paddingTop="?attr/actionBarSize">
+
+    <android.support.v4.view.PagerTitleStrip
+        android:id="@+id/pager_title_strip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:textColor="@color/blue"
+        />
+</android.support.v4.view.ViewPager>

@@ -78,6 +78,7 @@ public class HipSpiceFragment extends Fragment {
     private List<String> mArtistIdList = new ArrayList<String>();
     private SpiceManager thomasSpiceManager = new SpiceManager(ThomasApiService.class);
     private SpiceManager lastFmSpiceManager = new SpiceManager(LastFmSpiceService.class);
+    private SharedPreferences mSharedPreferences;
 
     private int imageSize;
     private boolean loadingDone = false;
@@ -96,10 +97,11 @@ public class HipSpiceFragment extends Fragment {
         super.onCreate(savedInstanceState);
         loadingInterface.onLoadingStarted();
         mPicasso = Picasso.with(getActivity().getApplicationContext());
-        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mUsername = sharedPreferences.getString(getString(R.string.PREF_USERNAME), "");
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mUsername = mSharedPreferences.getString(getString(R.string.PREF_USERNAME), "");
         assert ((mUsername != null) && (mUsername.length() <= 0));
         entireHistoryRequest = EntireHistorySpiceRequest.getCachedSpiceRequest(mUsername);
+        totalRated = mSharedPreferences.getInt(getString(R.string.PREF_NUMBER_LOADED), 0);
     }
 
     @AfterViews
@@ -135,10 +137,11 @@ public class HipSpiceFragment extends Fragment {
         yesText.setTypeface(normalFace);
         noText.setTypeface(normalFace);
         dunnoText.setTypeface(normalFace);
-        if (!loadingDone) {
-            setHasOptionsMenu(false);
-        }
-
+//        if (loadingDone && totalRated > 10) {
+        setHasOptionsMenu(true);
+//        } else {
+//            setHasOptionsMenu(false);
+//        }
     }
 
     @Touch(R.id.hipster_button_yes)
@@ -160,13 +163,6 @@ public class HipSpiceFragment extends Fragment {
     void handleShowScore() {
         ScoreActivity_.intent(this).mScoreResponse(mScoreResponse)
                 .start();
-//        GraphFragment newFragment = GraphFragment_.builder()
-//                .mScoreResponse(mScoreResponse)
-//                .build();
-//        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//        transaction.replace(R.id.container, newFragment);
-//        transaction.addToBackStack(null);
-//        transaction.commit();
     }
 
     private void handleTouch(MotionEvent event, SpringyButton button, String classification) {
@@ -265,7 +261,9 @@ public class HipSpiceFragment extends Fragment {
 
                 @Override
                 public void onRequestNotFound() {
-                    getThomasSpiceManager().execute(artistListRequest, this);
+                    if (mArtistIdList.size() <= 1) {
+                        getThomasSpiceManager().execute(artistListRequest, this);
+                    }
                 }
             };
 
@@ -367,6 +365,8 @@ public class HipSpiceFragment extends Fragment {
         public void onRequestSuccess(String s) {
             if (s.equals("ok")) {
                 totalRated++;
+                mSharedPreferences.edit().putInt(getString(R.string.PREF_NUMBER_LOADED),
+                        totalRated).commit();
                 // successfully rated artist so remove it from the list.
                 mArtistIdList.remove(0);
                 if (totalRated > 10 && loadingDone) {

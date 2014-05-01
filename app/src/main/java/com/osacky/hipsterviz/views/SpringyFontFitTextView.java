@@ -2,6 +2,7 @@ package com.osacky.hipsterviz.views;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Build;
 import android.util.AttributeSet;
 
 import com.facebook.rebound.Spring;
@@ -33,12 +34,14 @@ public class SpringyFontFitTextView extends FontFitTextView implements SpringLis
 
         float selectedTitleScale = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1, 0,
                 1);
-        setScaleX(selectedTitleScale);
-        setScaleY(selectedTitleScale);
-
         float titleTranslateY = (float) SpringUtil.mapValueFromRangeToRange(value, 0, 1,
                 Util.dpToPx(-150f, resources), 0);
-        setTranslationY(titleTranslateY);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            setScaleX(selectedTitleScale);
+            setScaleY(selectedTitleScale);
+            setTranslationY(titleTranslateY);
+        }
     }
 
     @Override

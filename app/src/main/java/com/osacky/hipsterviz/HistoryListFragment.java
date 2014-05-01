@@ -1,6 +1,7 @@
 package com.osacky.hipsterviz;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.AbsListView;
@@ -18,6 +19,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ItemClick;
 
 @EFragment
@@ -30,6 +32,8 @@ public class HistoryListFragment extends BaseSpiceListFragment
     private static final String TAG = "PlaceHolderFragment";
     @Bean
     TrackListAdapter trackListAdapter;
+    @FragmentArg
+    String username;
     private boolean mDataChanged = false;
     private boolean mScrollStateIdle = true;
 
@@ -40,19 +44,20 @@ public class HistoryListFragment extends BaseSpiceListFragment
     void bindAdapter() {
         setListAdapter(trackListAdapter);
         setListShown(false);
-        getListView().setFastScrollEnabled(true);
         getListView().setOnScrollListener(this);
+        getListView().setCacheColorHint(Color.TRANSPARENT);
         setEmptyText("An error occurred while loading the data");
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        getListView().setFastScrollEnabled(true);
         if (getListAdapter().isEmpty()) {
             loadingInterface.onLoadingStarted();
             getSpiceManager().execute(
                     HistoryPageSpiceRequest.getCachedSpiceRequest(
-                            "nosacky",
+                            username,
                             1,
                             DurationInMillis.ALWAYS_RETURNED
                     ),
@@ -136,7 +141,7 @@ public class HistoryListFragment extends BaseSpiceListFragment
             loadingInterface.onLoadingStarted();
             getSpiceManager().execute(
                     HistoryPageSpiceRequest.getCachedSpiceRequest(
-                            "nosacky",
+                            username,
                             Math.round(totalItemCount / PAGE_SIZE) + 1,
                             DurationInMillis.ALWAYS_RETURNED
                     ),
