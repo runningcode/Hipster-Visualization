@@ -83,6 +83,7 @@ public class HipSpiceFragment extends Fragment {
     private int imageSize;
     private boolean loadingDone = false;
     private int totalRated = 0;
+    private String mUsername;
 
     private EntireHistorySpiceRequest.EntireHistoryResponse mHistory;
     private CachedSpiceRequest<EntireHistorySpiceRequest.EntireHistoryResponse>
@@ -97,15 +98,9 @@ public class HipSpiceFragment extends Fragment {
         loadingInterface.onLoadingStarted();
         mPicasso = Picasso.with(getActivity().getApplicationContext());
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        final String username = sharedPreferences.getString(getString(R.string.PREF_USERNAME), "");
-        assert ((username != null) && (username.length() <= 0));
-        entireHistoryRequest = EntireHistorySpiceRequest.getCachedSpiceRequest(username);
-        getThomasSpiceManager().addListenerIfPending(ArtistDataResponse.ArtistList.class, 100,
-                artistListListener);
-        getLastFmSpiceManager().addListenerIfPending(EntireHistorySpiceRequest
-                .EntireHistoryResponse.class, username, new EntireHistoryRequestListener());
-        getLastFmSpiceManager().addListenerIfPending(ProcessScoreSpiceRequest.ScoreResponse.class,
-                "score", scoreResponseListener);
+        mUsername = sharedPreferences.getString(getString(R.string.PREF_USERNAME), "");
+        assert ((mUsername != null) && (mUsername.length() <= 0));
+        entireHistoryRequest = EntireHistorySpiceRequest.getCachedSpiceRequest(mUsername);
     }
 
     @AfterViews
@@ -217,6 +212,12 @@ public class HipSpiceFragment extends Fragment {
     public void onStart() {
         thomasSpiceManager.start(getActivity());
         lastFmSpiceManager.start(getActivity());
+        getThomasSpiceManager().addListenerIfPending(ArtistDataResponse.ArtistList.class, 100,
+                artistListListener);
+        getLastFmSpiceManager().addListenerIfPending(EntireHistorySpiceRequest
+                .EntireHistoryResponse.class, mUsername, new EntireHistoryRequestListener());
+        getLastFmSpiceManager().addListenerIfPending(ProcessScoreSpiceRequest.ScoreResponse.class,
+                "score", scoreResponseListener);
         super.onStart();
     }
 

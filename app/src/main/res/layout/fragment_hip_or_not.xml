@@ -44,8 +44,8 @@
 
         <com.osacky.hipsterviz.views.SpringyButton_
             android:id="@+id/hipster_button_no"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_alignParentLeft="true"
             app:startX="-100dp"
             app:text="@string/no_text"
@@ -53,8 +53,8 @@
 
         <com.osacky.hipsterviz.views.SpringyButton_
             android:id="@+id/hipster_button_yes"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_alignParentRight="true"
             app:startX="100dp"
             app:text="@string/yes_text"
@@ -64,8 +64,8 @@
 
     <com.osacky.hipsterviz.views.SpringyButton_
         android:id="@+id/hipster_button_dont_know"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_gravity="center_horizontal"
         app:startY="100dp"
         app:text="@string/dunno_text"

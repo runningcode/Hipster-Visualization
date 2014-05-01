@@ -83,7 +83,7 @@ public class ProcessScoreSpiceRequest
             }
             response.totalHipsterArtistListens += todayIndieListens;
             response.totalPopArtistListens += todayPopListens;
-            response.scoreArray.put(key, 1.0f * todayIndieListens / songsForToday);
+            response.scoreArray.put(key, 1.0 * todayIndieListens / songsForToday);
         }
         return response;
     }
@@ -119,7 +119,7 @@ public class ProcessScoreSpiceRequest
     }
 
     public static class ScoreResponse implements Serializable {
-        SparseArray<Float> scoreArray = new SparseArray<Float>();
+        SparseArray<Double> scoreArray = new SparseArray<Double>();
         int totalArtists;
         int totalHipsterArtists;
         int totalPopArtists;
@@ -128,7 +128,7 @@ public class ProcessScoreSpiceRequest
         int totalListens;
         HashMap<String, Integer> artistScoreLookup = new HashMap<String, Integer>();
 
-        public SparseArray<Float> getScoreArray() {
+        public SparseArray<Double> getScoreArray() {
             return scoreArray;
         }
     }
