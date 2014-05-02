@@ -53,6 +53,6 @@ public class LastFmSpiceService extends RetrofitGsonSpiceService {
                 .setEndpoint(getServerUrl())
                 .setRequestInterceptor(requestInterceptor)
                 .setConverter(getConverter())
-                .setLogLevel(RestAdapter.LogLevel.FULL);
+                .setLogLevel(RestAdapter.LogLevel.NONE);
     }
 }

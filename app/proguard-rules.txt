@@ -16,10 +16,39 @@
 #   public *;
 #}
 
+-keepclassmembers class com.osacky.hipsterviz.api.** {
+  public void set*(***);
+  public *** get*();
+  public *** is*();
+  *;
+}
+
+-keep class com.osacky.hipsterviz.models.** {
+  *;
+}
+
+-keep class com.google.gson.** { *; }
+-keep class com.google.inject.** { *; }
+-keep class org.apache.http.** { *; }
+-keep class org.apache.james.mime4j.** { *; }
+-keep class javax.inject.** { *; }
+-keep class retrofit.** { *; }
+-keep class sun.misc.Unsafe { *; }
+
 -dontwarn com.squareup.**
 -dontwarn org.androidannotations.api**
 -dontwarn org.joda.time.**
 -dontwarn retrofit.**
 -dontwarn com.octo.android.robospice.**
 
+-keepattributes Signature
 -keepattributes LineNumberTable
+
+-keepclassmembers class * implements java.io.Serializable {
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
+}

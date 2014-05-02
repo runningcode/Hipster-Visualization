@@ -38,6 +38,6 @@ public class ThomasApiService extends RetrofitGsonSpiceService {
                 .setEndpoint(getServerUrl())
                 .setRequestInterceptor(requestInterceptor)
                 .setConverter(getConverter())
-                .setLogLevel(RestAdapter.LogLevel.BASIC);
+                .setLogLevel(RestAdapter.LogLevel.NONE);
     }
 }
